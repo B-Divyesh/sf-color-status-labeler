@@ -15,6 +15,23 @@ test('landing page explains and demonstrates the product', async ({ page }) => {
   expect(results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
 });
 
+test('the deploy artifact contains a real extension ZIP and static-host routing policy', async ({ page }) => {
+  const response = await page.request.get('/downloads/color-status-labeler-chrome.zip');
+  expect(response.ok()).toBe(true);
+  expect(response.headers()['content-type']).toMatch(/zip|octet-stream/);
+  expect((await response.body()).subarray(0, 4).toString('ascii')).toBe('PK\x03\x04');
+
+  const policy = await page.request.get('/staticwebapp.config.json');
+  const config = await policy.json() as { navigationFallback: { exclude: string[] }; globalHeaders: Record<string, string>; routes: Array<{ route: string; headers: Record<string, string> }> };
+  expect(config.navigationFallback.exclude).toEqual(expect.arrayContaining(['/downloads/*', '/sw.js']));
+  expect(config.globalHeaders['Content-Security-Policy']).toContain("worker-src 'self'");
+  expect(config.globalHeaders['Permissions-Policy']).toContain('geolocation=()');
+  expect(config.routes).toEqual(expect.arrayContaining([
+    expect.objectContaining({ route: '/assets/*', headers: { 'Cache-Control': 'public, max-age=31536000, immutable' } }),
+    expect.objectContaining({ route: '/sw.js', headers: { 'Cache-Control': 'no-cache', 'Service-Worker-Allowed': '/' } })
+  ]));
+});
+
 test('mobile layout does not overflow and legal pages are present', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
@@ -27,7 +44,23 @@ test('mobile layout does not overflow and legal pages are present', async ({ pag
 
 test('the landing guide remains available offline after the first visit', async ({ page, context }) => {
   await page.goto('/');
-  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.waitForFunction(async () => {
+    const registration = await navigator.serviceWorker.getRegistration();
+    return registration?.active?.scriptURL.endsWith('/sw.js') ?? false;
+  });
+  await expect.poll(() => page.evaluate(async () => (await navigator.serviceWorker.getRegistration())?.active?.state)).toBe('activated');
+  await expect.poll(() => page.evaluate(async () => [...await caches.keys()].some((key) => key.startsWith('csl-site-')))).toBe(true);
+  const shellRequestsSucceed = await page.evaluate(async () => {
+    const source = await (await fetch('/sw.js', { cache: 'no-store' })).text();
+    const shell = JSON.parse(source.match(/const SHELL=(\[[^;]+\])/u)?.[1] ?? '[]') as string[];
+    const results = await Promise.all(shell.map(async (url) => ({ url, ok: (await fetch(url)).ok })));
+    return results;
+  });
+  expect(shellRequestsSucceed).toEqual(expect.arrayContaining([
+    expect.objectContaining({ url: '/', ok: true }),
+    expect.objectContaining({ url: '/assets/main-0anUPODu.js', ok: true })
+  ]));
+  expect(shellRequestsSucceed.every(({ ok }) => ok)).toBe(true);
   await page.reload();
   await context.setOffline(true);
   await page.reload();

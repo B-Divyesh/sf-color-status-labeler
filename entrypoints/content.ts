@@ -47,6 +47,8 @@ export default defineContentScript({
       .dialog p { margin:0 0 18px; color:#5F594C; font:13px/1.45 ui-monospace,monospace; }
       .dialog label,.dialog legend { display:block; margin:0 0 7px; font:800 13px/1.3 ui-monospace,monospace; }
       .dialog input[type=text],.dialog select { width:100%; margin-bottom:15px; padding:9px 10px; border:2px solid var(--ink); color:var(--ink); background:white; }
+      .dialog input[aria-invalid=true] { border-color:var(--red); box-shadow:0 0 0 1px var(--red); }
+      .field-error { min-height:20px; margin:-9px 0 12px!important; color:var(--red)!important; font-weight:800!important; }
       fieldset { margin:0 0 17px; padding:0; border:0; }
       .pattern-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
       .pattern-choice { position:relative; display:grid!important; min-height:58px; margin:0!important; place-items:center; border:2px solid var(--ink); cursor:pointer; }
@@ -267,6 +269,11 @@ export default defineContentScript({
       name.maxLength = 32;
       name.autocomplete = 'off';
       name.placeholder = 'Example: Needs review';
+      name.setAttribute('aria-describedby', 'csl-label-error');
+      const labelError = document.createElement('p');
+      labelError.id = 'csl-label-error';
+      labelError.className = 'field-error';
+      labelError.setAttribute('role', 'alert');
       const propertyLabel = document.createElement('label');
       propertyLabel.htmlFor = 'csl-color';
       propertyLabel.textContent = 'Sampled color';
@@ -315,7 +322,7 @@ export default defineContentScript({
       const warning = document.createElement('p');
       warning.className = 'warning';
       warning.textContent = 'Pixel matching can miss or mislabel items after a site redesign. Check the legend when the page changes.';
-      form.append(nameLabel, name, propertyLabel, property, fields, actions, warning);
+      form.append(nameLabel, name, labelError, propertyLabel, property, fields, actions, warning);
       dialog.append(form);
       backdrop.append(dialog);
       shadow.append(backdrop);
@@ -337,11 +344,22 @@ export default defineContentScript({
         const selected = available.find((item) => item.property === property.value)!;
         const pattern = new FormData(form).get('pattern') as Pattern;
         const rule: StatusRule = { id: crypto.randomUUID(), label: name.value.trim(), color: selected.color, property: selected.property, pattern, tolerance: 10, enabled: true, createdAt: Date.now() };
-        if (!rule.label) return name.focus();
+        if (!rule.label) {
+          name.setAttribute('aria-invalid', 'true');
+          labelError.textContent = 'Enter a status label; spaces alone cannot name a signal.';
+          name.focus();
+          return;
+        }
         config.enabled = true;
         config.rules.push(rule);
         await saveSiteConfig(config);
         close();
+      });
+      name.addEventListener('input', () => {
+        if (name.value.trim()) {
+          name.removeAttribute('aria-invalid');
+          labelError.textContent = '';
+        }
       });
       name.focus();
     }

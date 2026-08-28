@@ -1,8 +1,12 @@
 import { chromium, expect, test } from '@playwright/test';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { tmpdir } from 'node:os';
 
 test('picker trains a rule and applies a click-through overlay', async () => {
-  const extensionPath = resolve('.output/chrome-mv3');
+  const extensionPath = mkdtempSync(resolve(tmpdir(), 'color-status-labeler-'));
+  execFileSync('unzip', ['-q', resolve('.output/color-status-labeler-1.0.0-chrome.zip'), '-d', extensionPath]);
   const context = await chromium.launchPersistentContext('', {
     channel: 'chromium',
     headless: true,
@@ -23,7 +27,12 @@ test('picker trains a rule and applies a click-through overlay', async () => {
     });
     await expect(host.locator('.picker-bar')).toContainText('Click a colored status');
     await page.locator('.dot.green').click();
+    await host.getByLabel('Status label').fill('   ');
+    await host.getByRole('button', { name: 'Save label' }).click();
+    await expect(host.getByRole('alert')).toHaveText('Enter a status label; spaces alone cannot name a signal.');
+    await expect(host.getByLabel('Status label')).toHaveAttribute('aria-invalid', 'true');
     await host.getByLabel('Status label').fill('Ready');
+    await expect(host.getByRole('alert')).toBeEmpty();
     await host.getByLabel('dots').check();
     await host.getByRole('button', { name: 'Save label' }).click();
     await expect(host.locator('.legend')).toContainText('Ready');
@@ -36,5 +45,6 @@ test('picker trains a rule and applies a click-through overlay', async () => {
     expect(saved.rules).toMatchObject([{ label: 'Ready', pattern: 'dots', color: '#4A985C' }]);
   } finally {
     await context.close();
+    rmSync(extensionPath, { recursive: true, force: true });
   }
 });

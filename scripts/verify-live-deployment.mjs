@@ -50,6 +50,12 @@ const [homepage, worker] = await Promise.all([
 if (!homepage.ok) fail(`${homepageUrl} returned HTTP ${homepage.status}.`);
 if (!header(homepage, 'content-security-policy').includes("default-src 'self'")) fail('homepage is missing the self-only CSP.');
 if (!header(homepage, 'permissions-policy').includes('geolocation=()')) fail('homepage is missing the restrictive Permissions Policy.');
-if (!worker.ok || !/no-cache/iu.test(header(worker, 'cache-control'))) fail('service worker is not served with no-cache updates.');
+if (!worker.ok || !/no-cache/iu.test(header(worker, 'cache-control')) || header(worker, 'service-worker-allowed') !== '/') {
+  fail('service worker is not served with no-cache updates and root scope.');
+}
+const workerSource = await worker.text();
+if (!workerSource.includes('self.skipWaiting()') || !workerSource.includes('self.clients.claim()')) {
+  fail('service worker does not contain the immediate update activation path.');
+}
 
 console.log(`Verified live deployment: ${base.origin} (${bytes.length.toLocaleString()} byte extension ZIP)`);

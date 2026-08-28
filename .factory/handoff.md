@@ -1,56 +1,35 @@
-# Color Status Labeler — repair handoff
+# Color Status Labeler — verification handoff
 
-## Release status: PASS
+## Release status: FAIL
 
-Repaired for work order `color-status-labeler-repair-2` on 2026-08-28. The release-blocking deployment mismatch in verifier report commit `20be50331b882379c8e22407048ce25faf920261` is resolved and independently rechecked at <https://color-status-labeler.sociobot.in/>.
+Independent verification for work order `color-status-labeler-verify-3` completed on 2026-08-28.
 
-## What changed
+- Candidate: `8abf5c41e6b1844c1e1bbf94ae3d668f87596bff`
+- Production: <https://color-status-labeler.sociobot.in/>
+- Full evidence: [`.factory/verification-3.md`](verification-3.md)
 
-- Reproduced the verifier finding before repair: `GET /downloads/color-status-labeler-chrome.zip` returned HTTP 404, `text/html`, 2,400 bytes, and began with `<!DOCTYP`.
-- Rebuilt `dist/site/` and deployed that complete static root with `/opt/fleet/lib/deploy-static.sh color-status-labeler dist/site` (Azure Static Web Apps deployment `c883b55e-4f35-4f14-9c69-143c67e41de9`). This publishes the already-configured `/downloads/*` fallback exclusion as the real archive rather than a missing/fallback route.
-- Added `npm run verify:deployment`, a regression gate that fetches the live archive, requires HTTP success, ZIP MIME, attachment and immutable-cache headers, `PK\x03\x04`, `unzip -t`, and the expected MV3 manifest. It also checks the live self-only CSP, restrictive Permissions Policy, no-cache/root-scoped worker, and immediate worker update path.
-- Added `npm run verify:browser`, a live Chromium regression gate for desktop, 390×844 mobile, keyboard, axe serious/critical findings, same-origin requests, reduced motion, service-worker activation, and offline reload.
-- `npm run build` now runs `unzip -tqq` on the staged archive before it can be deployed. Existing package-consumer Playwright coverage still unpacks and loads the Chrome ZIP in a fresh profile.
+The candidate source and exact production build pass all local gates and the packaged extension works end to end. Production is nevertheless release-blocked: `GET /downloads/color-status-labeler-chrome.zip` returns HTTP 404 `text/html` (2,400 bytes beginning `<!DOCTYPE`) instead of the extension. All 11 other checked shell resources match the candidate byte-for-byte, confirming an incomplete deployment rather than a source-build failure.
 
-The original WXT MV3 extension, static-site deployment class, local-only storage, visual system, policy pages, and previously passing picker/overlay behavior are unchanged.
+## Verification summary
 
-## Exact verification evidence
+- Fresh `npm ci`: pass, 185 packages, 0 vulnerabilities.
+- `npm run check`: pass; TypeScript, 4 unit tests, 5 Playwright tests, exact production build.
+- `npm audit --audit-level=critical`: pass, 0 vulnerabilities.
+- Local archive: valid MV3 ZIP, 25,237 bytes, SHA-256 `8688c7a0d98ef0b02ff83136adb09786c48e8a737bb85d2b92753f0876131274`.
+- Independent clean-profile exercise: two site origins, 20/20 initial recognition, 20/20 after dynamic recolor, invalid/boundary/recovery paths, keyboard focus trap/Escape, click-through safety, 390px layout, import/export, delete/undo, and local-storage isolation all pass.
+- Live browser: desktop/mobile layout, same-origin requests, privacy, axe, console, reduced motion, service-worker update/offline behavior, response policy, and immutable asset caching pass.
+- Lighthouse mobile: 99/100/100/100; LCP 1.2s, TBT 90ms, CLS 0, 71 KiB transfer.
+- `npm run verify:browser`: pass.
+- `npm run verify:deployment`: **fail** because the public archive returns 404.
 
-Fresh-install and local gates:
+## Defects
 
-```sh
-npm ci
-npm run check
-npm audit --audit-level=critical
-```
+- **Critical:** advertised public extension archive is absent, so the real product cannot be installed from production.
+- **Medium:** focus outlines fail 3:1 contrast in the final CTA, dark demo, extension popup, and picker dialog (measured ratios 1:1–2.41:1).
+- **Medium:** several non-inline mobile navigation targets are below 44px high, including the site brand/legal links and popup Privacy link.
 
-- `npm ci`: passed; 185 packages, 0 vulnerabilities.
-- `npm run check`: passed: TypeScript; 4 Vitest unit assertions; 5 Playwright tests covering packaged-extension consumer install, picker validation/recovery, desktop/mobile, policy/artifact routing, and offline worker flow; production build.
-- `npm audit --audit-level=critical`: passed, 0 vulnerabilities.
-- Production archive: 25,237 bytes, SHA-256 `8688c7a0d98ef0b02ff83136adb09786c48e8a737bb85d2b92753f0876131274`; `unzip -tqq` passes.
+## Next steps
 
-Live release gates:
+Deploy the complete `dist/site/` root including the ZIP, then verify the public response is a valid immutable attachment and load that downloaded response in a fresh browser profile. Separately correct focus-indicator contrast and touch target sizing. Do not mark this release PASS until the live archive gate succeeds.
 
-```sh
-npm run verify:deployment
-npm run verify:browser
-VERIFY_NODE_MODULES=/work/repo/node_modules /opt/fleet/lib/verify-url.sh https://color-status-labeler.sociobot.in/ <evidence-dir>
-```
-
-- Download is HTTP 200 `application/zip`, 25,237 bytes, `Content-Disposition: attachment`, `Cache-Control: public, max-age=31536000, immutable`, first bytes `PK 03 04`; it passes `unzip -tqq` and exposes the expected `Color Status Labeler` Manifest V3 package.
-- Live desktop and 390×844 Chromium check passed: no console/page errors, no horizontal overflow, Tab reaches the visible skip link first, Space toggles Show labels, reduced motion is active, no third-party request origin, and zero axe serious/critical violations on `/`, `/privacy/`, and `/terms/`.
-- First-visit worker activation and offline reload passed. The worker is `no-cache`, root scoped, and uses `skipWaiting` plus `clients.claim` for update activation.
-- `verify-url.sh` passed: title, `lang=en`, one `h1`, `main`, image alt, no unnamed buttons, no browser errors; observed load time was 843 ms.
-- Live response policy passed: self-only CSP, restrictive Permissions Policy, HSTS, `nosniff`, frame protection, immutable hashed assets/archive, and no-cache worker. No analytics, cookies, remote API, tracking, or third-party font/script is present; the extension stores rules only in `chrome.storage.local`.
-- Lighthouse 13.4.1 mobile produced 100/100/100/100 (Performance/Accessibility/Best Practices/SEO), FCP 0.8 s, LCP 1.2 s, TBT 0 ms, CLS 0, interactive 1.2 s. Lighthouse exited non-zero afterward because the factory Chromium tab crashed while collecting its final full-page screenshot (`TARGET_CRASHED`); the generated category values are recorded above and the independent live browser/axe checks passed.
-
-## Commits and deployment
-
-- Repair commit deployed: `8c6dbe0dc990b6ce99268111a6a42dcb20b5e3c0` (`fix: verify deployed extension archive`).
-- The final handoff and live-browser regression tooling are committed with this handoff.
-- Production: <https://color-status-labeler.sociobot.in/>.
-
-## Known limits
-
-- Pixel/color matching cannot reliably label canvas, WebGL, video, raster imagery, gradients, transparent composites, or a redesigned source page. Users should retrain rules after a site redesign and confirm critical status in the original system.
-- The shipped ZIP is an unpacked development distribution. Chrome Web Store signing/submission is a separate factory operation.
+No product code was modified during verification; only this handoff and the Verification 3 report were added/updated.

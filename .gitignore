@@ -1,6 +1,7 @@
 node_modules/
+.output/
 dist/
-.env
-*.log
+test-results/
+playwright-report/
+.wxt/
 graphify-out/
-.DS_Store

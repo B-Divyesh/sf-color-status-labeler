@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Status Labeler</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to controls</a>
+    <header class="masthead">
+      <span class="track-mark" aria-hidden="true">A / 01</span>
+      <h1>Color status<br />labeler</h1>
+      <p id="site-name" class="site-name">Reading this tab…</p>
+    </header>
+    <main id="main">
+      <section id="unsupported" class="notice" hidden>
+        <h2>This page is protected</h2>
+        <p>Open a regular website, then use the extension there. Browser settings and store pages cannot be changed.</p>
+      </section>
+
+      <div id="controls" hidden>
+        <label class="site-toggle">
+          <span>
+            <strong>Show labels on this site</strong>
+            <small>Stored only on this device</small>
+          </span>
+          <input id="site-enabled" type="checkbox" role="switch" />
+        </label>
+
+        <button id="pick" class="primary" type="button">
+          <span aria-hidden="true">＋</span> Pick a status color
+        </button>
+
+        <section class="rules-section" aria-labelledby="rules-heading">
+          <div class="section-heading">
+            <h2 id="rules-heading">Learned labels</h2>
+            <span id="rule-count" class="counter">0</span>
+          </div>
+          <div id="empty" class="empty-state">
+            <span class="empty-pattern" aria-hidden="true"></span>
+            <p><strong>No tracks labeled yet.</strong><br />Pick a colored status on this page to teach the extension what it means.</p>
+          </div>
+          <ul id="rule-list" class="rule-list" aria-label="Learned status labels"></ul>
+        </section>
+
+        <details class="data-tools">
+          <summary>Move or reset your labels</summary>
+          <div class="tool-row">
+            <button id="export" class="secondary" type="button">Export backup</button>
+            <label class="file-button" for="import-file">Import backup</label>
+            <input id="import-file" type="file" accept="application/json" />
+          </div>
+          <button id="clear-site" class="danger-link" type="button">Clear this site’s labels</button>
+        </details>
+      </div>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </main>
+    <footer><span>Local-only utility</span><a href="https://color-status-labeler.sociobot.in/privacy" target="_blank">Privacy</a></footer>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

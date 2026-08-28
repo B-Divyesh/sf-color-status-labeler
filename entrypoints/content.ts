@@ -25,7 +25,7 @@ export default defineContentScript({
       *,*::before,*::after { box-sizing:border-box; }
       button,input,select { font:inherit; }
       button,input,select { min-height:44px; }
-      button:focus-visible,input:focus-visible,select:focus-visible { outline:3px solid var(--yellow); outline-offset:3px; }
+      button:focus-visible,input:focus-visible,select:focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
       #layer { position:fixed; inset:0; z-index:2147483646; pointer-events:none; }
       .badge { position:fixed; display:flex; max-width:180px; min-height:24px; align-items:center; gap:5px; padding:3px 7px 3px 4px; overflow:hidden; border:2px solid var(--ink); color:var(--ink); background:var(--paper); box-shadow:2px 2px 0 rgba(23,21,18,.82); font:700 12px/1.2 ui-monospace,SFMono-Regular,"Cascadia Mono",monospace; white-space:nowrap; text-overflow:ellipsis; transform:translateY(-4px); animation:arrive 180ms ease-out both; }
       .pattern { display:inline-block; width:18px; height:18px; flex:0 0 auto; border:1px solid var(--ink); background-color:var(--sample); }
@@ -54,7 +54,7 @@ export default defineContentScript({
       .pattern-choice { position:relative; display:grid!important; min-height:58px; margin:0!important; place-items:center; border:2px solid var(--ink); cursor:pointer; }
       .pattern-choice input { position:absolute; opacity:0; }
       .pattern-choice:has(input:checked) { color:white; background:var(--blue); box-shadow:3px 3px 0 var(--ink); }
-      .pattern-choice:has(input:focus-visible) { outline:3px solid var(--yellow); outline-offset:3px; }
+      .pattern-choice:has(input:focus-visible) { outline:3px solid var(--blue); outline-offset:3px; }
       .pattern-choice .pattern { --sample:var(--paper); }
       .actions { display:flex; flex-direction:row-reverse; gap:10px; }
       .actions button { flex:1; padding:9px 12px; border:2px solid var(--ink); cursor:pointer; font-weight:800; }

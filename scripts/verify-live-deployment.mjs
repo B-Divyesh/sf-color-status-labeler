@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
@@ -29,6 +30,12 @@ if (!/max-age=31536000/iu.test(header(archive, 'cache-control')) || !/immutable/
 }
 const bytes = Buffer.from(await archive.arrayBuffer());
 if (bytes.subarray(0, 4).toString('ascii') !== 'PK\u0003\u0004') fail(`${archiveUrl} did not begin with a ZIP signature.`);
+const localArchive = resolve('dist/site/downloads/color-status-labeler-chrome.zip');
+if (existsSync(localArchive)) {
+  const digest = (value) => createHash('sha256').update(value).digest('hex');
+  const expected = readFileSync(localArchive);
+  if (digest(bytes) !== digest(expected)) fail(`${archiveUrl} does not match the locally built release archive.`);
+}
 
 const directory = mkdtempSync(resolve(tmpdir(), 'color-status-labeler-live-'));
 const filename = resolve(directory, 'color-status-labeler-chrome.zip');

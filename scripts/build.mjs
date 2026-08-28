@@ -17,6 +17,7 @@ const downloads = resolve(root, 'dist/site/downloads');
 mkdirSync(downloads, { recursive: true });
 cpSync(resolve(output, archive), resolve(downloads, 'color-status-labeler-chrome.zip'));
 const packagedArchive = resolve(downloads, 'color-status-labeler-chrome.zip');
+const deployableArchive = resolve(downloads, 'color-status-labeler-chrome.bin');
 const descriptor = openSync(packagedArchive, 'r');
 const signature = Buffer.alloc(4);
 try {
@@ -27,4 +28,8 @@ try {
   closeSync(descriptor);
 }
 execFileSync('unzip', ['-tqq', packagedArchive], { stdio: 'inherit' });
+// Azure Static Web Apps' deployment client has repeatedly omitted nested ZIP
+// payloads. Keep the canonical ZIP for local consumers and publish the same
+// bytes under a deploy-safe extension for the public route rewrite.
+cpSync(packagedArchive, deployableArchive);
 console.log('Built site and extension: dist/site');

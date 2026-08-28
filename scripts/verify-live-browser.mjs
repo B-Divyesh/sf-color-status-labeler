@@ -4,6 +4,17 @@ import AxeBuilder from '@axe-core/playwright';
 const base = new URL(process.argv[2] ?? 'https://color-status-labeler.sociobot.in/');
 const failures = [];
 const check = (condition, message) => { if (!condition) failures.push(message); };
+const contrastRatio = (first, second) => {
+  const luminance = (color) => {
+    const channels = (color.match(/[\d.]+/gu) ?? []).slice(0, 3).map(Number).map((value) => {
+      const channel = value / 255;
+      return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+  };
+  const [lighter, darker] = [luminance(first), luminance(second)].sort((a, b) => b - a);
+  return (lighter + 0.05) / (darker + 0.05);
+};
 
 const browser = await chromium.launch({ channel: 'chromium', headless: true });
 try {
@@ -33,6 +44,18 @@ try {
   await toggle.focus();
   await page.keyboard.press('Space');
   check(!(await toggle.isChecked()), 'Space did not toggle Show labels.');
+  for (const [target, surface, name] of [
+    [toggle, page.locator('.demo-section'), 'demo switch'],
+    [page.locator('.final-cta').getByRole('link', { name: /Download the extension/ }), page.locator('.final-cta'), 'final download CTA']
+  ]) {
+    await target.focus();
+    const outline = await target.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return { color: style.outlineColor, width: Number.parseFloat(style.outlineWidth) };
+    });
+    const background = await surface.evaluate((element) => getComputedStyle(element).backgroundColor);
+    check(outline.width >= 3 && contrastRatio(outline.color, background) >= 3, `${name} focus indicator is below 3:1 contrast or 3px width.`);
+  }
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.reload({ waitUntil: 'networkidle' });
   check(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior) === 'auto', 'reduced-motion scrolling is not disabled.');
@@ -44,6 +67,14 @@ try {
   const mobilePage = await mobile.newPage();
   await mobilePage.goto(base.href, { waitUntil: 'networkidle' });
   check(await mobilePage.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), '390px mobile layout has horizontal overflow.');
+  for (const target of [
+    mobilePage.getByRole('link', { name: 'Color Status Labeler home' }),
+    mobilePage.locator('.site-footer').getByRole('link', { name: 'Privacy' }),
+    mobilePage.locator('.site-footer').getByRole('link', { name: 'Terms' })
+  ]) {
+    const box = await target.boundingBox();
+    check(Boolean(box && box.width >= 44 && box.height >= 44), 'a non-inline mobile navigation target is below 44x44 CSS px.');
+  }
   await mobilePage.waitForFunction(async () => (await navigator.serviceWorker.getRegistration())?.active?.scriptURL.endsWith('/sw.js') ?? false);
   await mobile.setOffline(true);
   await mobilePage.reload({ waitUntil: 'domcontentloaded' });

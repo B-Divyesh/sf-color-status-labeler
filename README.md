@@ -46,7 +46,7 @@ npm run build        # extension ZIP + static site in dist/site/
 - `dist/site/`: deployable static site; `index.html` is at this exact root.
 - `dist/site/downloads/color-status-labeler-chrome.zip`: packaged extension linked by the site.
 
-Deploy only `dist/site/`. Infrastructure, DNS, and billing are outside this repository.
+Deploy only `dist/site/`. Its included `staticwebapp.config.json` preserves the extension ZIP and service-worker routes, sets immutable caching for hashed assets, and applies the site response policy. Infrastructure, DNS, and billing are outside this repository.
 
 ## Architecture and privacy
 

@@ -75,6 +75,20 @@ test('picker trains a rule and applies a click-through overlay', async () => {
     }, { origin });
     expect(saved.rules).toMatchObject([{ label: 'Ready', pattern: 'dots', color: '#4A985C' }]);
 
+    await worker.evaluate(async () => {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab.id) throw new Error('No active tab');
+      await chrome.tabs.sendMessage(tab.id, { type: 'START_PICKER' });
+    });
+    await expect(host.locator('.picker-bar')).toBeVisible();
+    await page.locator('.hero .button.primary').focus();
+    await page.keyboard.press('Enter');
+    await expect(host.getByRole('dialog')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(host.getByRole('dialog')).toHaveCount(0);
+    await page.setViewportSize({ width: 390, height: 844 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+
     const extensionId = new URL(worker.url()).host;
     const popup = await context.newPage();
     await popup.goto(`chrome-extension://${extensionId}/popup.html`);

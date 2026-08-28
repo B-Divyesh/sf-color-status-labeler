@@ -61,6 +61,9 @@ try {
   check(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior) === 'auto', 'reduced-motion scrolling is not disabled.');
   check(errors.length === 0, `desktop page errors: ${errors.join(' | ')}`);
   check([...requestOrigins].every((origin) => origin === base.origin), `unexpected third-party request: ${[...requestOrigins].join(', ')}`);
+  check((await context.cookies()).length === 0, 'the site set an unexpected cookie.');
+  const webStorage = await page.evaluate(() => ({ local: localStorage.length, session: sessionStorage.length }));
+  check(webStorage.local === 0 && webStorage.session === 0, 'the site wrote unexpected web storage data.');
   await context.close();
 
   const mobile = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true });
@@ -76,6 +79,13 @@ try {
     check(Boolean(box && box.width >= 44 && box.height >= 44), 'a non-inline mobile navigation target is below 44x44 CSS px.');
   }
   await mobilePage.waitForFunction(async () => (await navigator.serviceWorker.getRegistration())?.active?.scriptURL.endsWith('/sw.js') ?? false);
+  const updatedWorker = await mobilePage.evaluate(async () => {
+    const registration = await navigator.serviceWorker.getRegistration();
+    if (!registration) return false;
+    await registration.update();
+    return registration.active?.state === 'activated' && registration.active.scriptURL.endsWith('/sw.js');
+  });
+  check(updatedWorker, 'service-worker update did not retain an active production worker.');
   await mobile.setOffline(true);
   await mobilePage.reload({ waitUntil: 'domcontentloaded' });
   check(await mobilePage.getByRole('heading', { level: 1 }).textContent() === 'Stop guessing what the colors mean.', 'offline shell did not render the guide.');

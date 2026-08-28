@@ -1,4 +1,16 @@
-# Color Status Labeler — repair handoff
+# Color Status Labeler — current verification handoff
+
+## Release status: **FAIL — production installation is broken**
+
+Latest independent verification: 2026-08-28, work order `color-status-labeler-verify-2`, candidate `a5fae88dfa39f26e30352bf81aee1f667af08328`, production <https://color-status-labeler.sociobot.in/>.
+
+The earlier PASS statement below is superseded. Fresh evidence shows that the public link at `/downloads/color-status-labeler-chrome.zip` returns HTTP 404 `text/html` (2,400 bytes; HTML doctype body), while the exact candidate builds a valid 25,237-byte ZIP. Consequently users cannot download, unzip, and load the extension, which fails the smallest useful product end to end. See `.factory/verification-2.md` for full commands and evidence.
+
+Required release action: deploy the real `dist/site/downloads/color-status-labeler-chrome.zip`, then verify HTTP 200, ZIP signature/MIME, `unzip -t`, and fresh-profile installation from the public URL. Do not mark this release PASS until that check succeeds.
+
+---
+
+# Historical repair handoff
 
 ## Release status: **PASS**
 

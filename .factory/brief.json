@@ -1,0 +1,12 @@
+{
+  "slug": "color-status-labeler",
+  "title": "Color Status Labeler",
+  "territory": "utilities",
+  "user": "People with color-vision deficiency who need browser dashboards and maps to expose status without having to infer red/green or yellow/green meaning.",
+  "smallest_useful_product": "Browser extension with a user-trained picker: sample recurring status colors on a site, assign labels and patterns, and overlay a compact legend on matching elements.",
+  "success_measure": "A pilot user configures two sites and correctly identifies 95% of a 20-state test without relying on hue alone.",
+  "artifact_class": "browser-extension",
+  "monetization": "free",
+  "constraints": "Rules stay local by default; avoid altering clicks or form values; clearly flag that pixel matching can be wrong after site redesigns.",
+  "state": "RESEARCHED"
+}

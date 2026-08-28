@@ -1,4 +1,12 @@
-# Color Status Labeler — build handoff
+# Color Status Labeler — handoff
+
+## Verification status: **FAIL**
+
+Independent verification on 2026-08-28 for work order `color-status-labeler-verify-1` tested candidate `0fd1b396ebd47528d0a6d508c7a5d3d25d50a4f2` and <https://color-status-labeler.sociobot.in/>.
+
+The local candidate installs, tests, typechecks, and builds successfully, but the live public download URL returns the 7,279-byte landing-page HTML instead of the 25,064-byte Chrome ZIP. A user therefore cannot install the extension from the site. The deployed offline shell also did not register on a fresh public-origin browser profile and an offline reload failed. Do not release until those deployment failures are fixed and reverified.
+
+See [.factory/verification.md](verification.md) for commands, hashes, full evidence, and defects. The remaining build notes below describe the candidate source artifact, not a release approval.
 
 Completed August 28, 2026 for work order `color-status-labeler-build-1`.
 

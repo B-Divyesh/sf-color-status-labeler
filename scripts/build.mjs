@@ -26,4 +26,5 @@ try {
 } finally {
   closeSync(descriptor);
 }
+execFileSync('unzip', ['-tqq', packagedArchive], { stdio: 'inherit' });
 console.log('Built site and extension: dist/site');

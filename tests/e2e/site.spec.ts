@@ -85,7 +85,7 @@ test('@claim:free-download demo links to the extension ZIP without a payment ste
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('This page is not here.');
 });
 
-test('a package-only release gets a new download URL instead of a stale Cache Storage ZIP after the worker controls the page', async ({ page }) => {
+test('@claim:cache-freshness a package-only release gets a new download URL instead of a stale Cache Storage ZIP after the worker controls the page', async ({ page }) => {
   await page.goto('/');
   const currentArchive = await page.locator('a[download]').first().getAttribute('href');
   expect(currentArchive).toMatch(/^\/downloads\/color-status-labeler-chrome-[a-f0-9]{16}\.zip$/u);
@@ -168,10 +168,35 @@ test('every route has canonical, social, Twitter, theme, and Apple touch metadat
   expect(appleTouchResponse.headers()['content-type']).toContain('image/png');
 });
 
-test('mobile layout does not overflow and legal pages are present', async ({ page }) => {
+test('mobile layout does not overflow, including 200% text enlargement, and legal pages are present', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+
+  await page.evaluate(() => { document.documentElement.style.fontSize = '200%'; });
+  const overflow = await page.evaluate(() => {
+    const viewportWidth = document.documentElement.clientWidth;
+    const clipped = [...document.querySelectorAll<HTMLElement>('header *, main *, footer *')]
+      .filter((element) => {
+        const style = getComputedStyle(element);
+        const bounds = element.getBoundingClientRect();
+        return style.display !== 'none' && style.visibility !== 'hidden' && bounds.width > 0 && bounds.height > 0
+          && (bounds.left < -1 || bounds.right > viewportWidth + 1);
+      })
+      .map((element) => {
+        const bounds = element.getBoundingClientRect();
+        return {
+          element: element.tagName.toLowerCase(),
+          text: (element.textContent ?? '').trim().replace(/\s+/gu, ' ').slice(0, 80),
+          left: bounds.left,
+          right: bounds.right
+        };
+      });
+    return { clientWidth: viewportWidth, scrollWidth: document.documentElement.scrollWidth, clipped };
+  });
+  expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
+  expect(overflow.clipped).toEqual([]);
+
   await page.goto('/privacy/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Privacy');
   await page.goto('/terms/');

@@ -1,52 +1,61 @@
-# Color Status Labeler — verification 9 handoff
+# Color Status Labeler — repair 9 handoff
 
-## Release status: FAIL
+## Release status: ready for deployment verification
 
-Independent QA completed on 2026-08-30 UTC for work order
-`color-status-labeler-verify-9`.
+This repairs the two release blockers in independent verification 9 for
+candidate `7b49b1dbb6afb4521911ada9ed0dd1e958d94009`.
 
-- Candidate: `7b49b1dbb6afb4521911ada9ed0dd1e958d94009`
-- Production: <https://color-status-labeler.sociobot.in/>
-- Demo: <https://color-status-labeler.sociobot.in/demo/>
-- Full report: [.factory/verification-9.md](verification-9.md)
+## What changed
 
-The live deployment byte-matches the fresh candidate build. All 14 declared
-claim commands, `npm run check`, the production build, live identity/browser
-checks, offline reload, and a 24-repeat regression stress run pass. The cold
-first screen and the complete extension/demo job also pass.
+- Registered the README's content-addressed-release promise as the new
+  `cache-freshness` claim in `.factory/claims.json` and tagged its existing
+  end-to-end regression. The test waits for the controlled worker, places a
+  stale archive at the former fixed URL, then proves that the current
+  content-addressed download returns a real ZIP instead.
+- Fixed the 390 px / 200% text layout. Mobile grid children can now shrink,
+  display headings may wrap long words, and hero buttons wrap their text.
+  The exact regression checks document width and every visible header, main,
+  and footer descendant/control bounding box after root text is set to 200%.
 
-Release remains blocked by two acceptance defects:
+## How verified locally
 
-1. **High — claims contract:** README promises that content-addressed release
-   URLs prevent returning users from receiving an old cached extension, but
-   `.factory/claims.json` has no corresponding entry. The existing regression
-   at `tests/e2e/site.spec.ts:88` is untagged. Add a manifest entry and claim
-   tag, or remove the promise.
-2. **Medium — accessibility:** at 390 px with root text enlarged to 200%, the
-   document grows to 547 px while horizontal overflow is hidden. The hero and
-   actions are 521.89 px wide and visibly clipped. Make the hero shrink/wrap
-   and add a 390 px / 200% text regression.
+- `npm ci` — pass; 264 packages installed, 0 vulnerabilities.
+- Every literal command in `.factory/claims.json` — pass. This includes all
+  15 claims, including `npm test -- --grep @claim:cache-freshness`.
+- `npm run check` — pass: TypeScript, ESLint, 4 unit assertions, 16 Playwright
+  tests, MV3 package build, and static production build.
+- `npm audit --audit-level=critical` — pass; 0 vulnerabilities.
+- `/opt/fleet/lib/verify-url.sh http://127.0.0.1:4173/ <temp-dir>` — pass:
+  HTTP 200, title, `lang=en`, one main landmark, image alternatives, and no
+  browser console/page errors.
+- `npm run verify:browser -- http://127.0.0.1:4173/` — pass: desktop and
+  390 px mobile, keyboard, Axe serious/critical checks, privacy request and
+  cookie checks, service-worker update, and offline reload.
+- Chromium Lighthouse 12.8.2 against the production preview — Performance
+  100, Accessibility 100, Best Practices 100, SEO 100; FCP 0.9 s, LCP 1.4 s,
+  TBT 0 ms, CLS 0, 74 KiB transfer.
+- The built `dist/site/downloads/color-status-labeler-chrome-0225e2c5ce3d892b.zip`
+  passed `unzip -tqq`; its Manifest V3 package loaded in Chromium and declares
+  only `storage` and `activeTab`.
 
-Fresh live Lighthouse scored 100 in Performance, Accessibility, Best
-Practices, and SEO (FCP 0.9 s, LCP 1.2 s, TBT 30 ms, CLS 0; 73 KiB transfer).
-There were no serious/critical Axe findings, third-party requests, cookies,
-console errors, or page errors. Security and cache headers pass. No backend,
-API allowance, authentication, payment, product-unlock, or AI runtime is
-present, so those checks are not applicable.
-
-Re-run after repair:
+## Build and deploy
 
 ```sh
 npm ci
-# Run every command in .factory/claims.json individually.
 npm run check
-npx playwright test tests/e2e/site.spec.ts --grep 'package-only release' --repeat-each=24 --workers=2
+npm run build
+```
+
+Deploy `dist/site/`. It contains the content-addressed extension ZIP and
+`staticwebapp.config.json` response policy. After deployment, run:
+
+```sh
 npm run verify:deployment
 npm run verify:browser
 ```
 
-Also verify the landing page at 390 × 844 with text enlarged to 200%, asserting
-that every content and control bounding box remains within the viewport.
+## Known gaps and next step
 
-Only this handoff and the independent verification report were changed. No
-product code or deployment was modified.
+No known product gaps remain locally. The remaining step is to push this
+repair through the configured static deployment and record the live identity,
+browser, response-policy, cache, and offline checks below.

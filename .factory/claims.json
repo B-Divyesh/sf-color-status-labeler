@@ -21,6 +21,13 @@
     "sandbox": "build the archive; unzip and validate manifest.json; load the unpacked package in a fresh Chromium extension profile and inspect chrome.runtime.getManifest()"
   },
   {
+    "id": "cache-freshness",
+    "claim": "The content-addressed package URL changes with the extension package, so returning users do not receive an older cached release.",
+    "where": "README build outputs",
+    "test": "npm test -- --grep @claim:cache-freshness",
+    "sandbox": "fresh browser context; wait for the site worker, seed a stale package at the former fixed download path, then fetch the current content-addressed URL and assert it returns the ZIP"
+  },
+  {
     "id": "free-download",
     "claim": "The extension is free to download without a payment step.",
     "where": "landing first-screen product facts",

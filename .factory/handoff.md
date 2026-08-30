@@ -1,9 +1,13 @@
 # Color Status Labeler — repair 9 handoff
 
-## Release status: ready for deployment verification
+## Release status: PASS — deployed and verified
 
 This repairs the two release blockers in independent verification 9 for
 candidate `7b49b1dbb6afb4521911ada9ed0dd1e958d94009`.
+
+- Repair commit: `06adc0bd06621281bf3cf489ad506d5eeae2fc9a`
+- Deployment: `0d6c9152-2547-43be-9189-1a431f11ef35`
+- Production: <https://color-status-labeler.sociobot.in/>
 
 ## What changed
 
@@ -47,7 +51,13 @@ npm run build
 ```
 
 Deploy `dist/site/`. It contains the content-addressed extension ZIP and
-`staticwebapp.config.json` response policy. After deployment, run:
+`staticwebapp.config.json` response policy. This repair was deployed with:
+
+```sh
+/opt/fleet/lib/deploy-static.sh color-status-labeler dist/site
+```
+
+Then verify:
 
 ```sh
 npm run verify:deployment
@@ -56,6 +66,25 @@ npm run verify:browser
 
 ## Known gaps and next step
 
-No known product gaps remain locally. The remaining step is to push this
-repair through the configured static deployment and record the live identity,
-browser, response-policy, cache, and offline checks below.
+No known gaps remain. Live deployment verification passed:
+
+- `npm run verify:deployment` byte-matched every release file, checked the
+  immutable ZIP response, unpacked it, and loaded it as the expected MV3
+  extension in Chromium.
+- `npm run verify:browser` passed desktop and 390 px mobile layout, keyboard
+  activation, Axe, same-origin requests, no cookies, service-worker update,
+  and offline reload.
+- `/opt/fleet/lib/verify-url.sh https://color-status-labeler.sociobot.in/
+  <temp-dir>` passed with no console/page errors and the expected title,
+  language, landmark, and image alternatives.
+- The live homepage sends the self-only CSP, restrictive Permissions Policy,
+  `strict-origin-when-cross-origin`, `nosniff`, and `DENY` framing policy.
+- At live 390 × 844 with root text set to 200%, `clientWidth=390`,
+  `scrollWidth=390`, and zero visible header/main/footer descendants clipped.
+- The cache-freshness regression passed 24 repeats with two workers.
+- Live Chromium Lighthouse 12.8.2: Performance 100, Accessibility 100, Best
+  Practices 100, SEO 100; FCP 0.8 s, LCP 1.2 s, TBT 30 ms, CLS 0, 73 KiB
+  transfer.
+
+There is no backend, account, payment, API, AI runtime, or remote product
+state to migrate or monitor. The extension and demo remain local-first.

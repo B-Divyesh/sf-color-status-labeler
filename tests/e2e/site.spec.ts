@@ -27,15 +27,12 @@ test('landing page explains and demonstrates the product', async ({ page }) => {
   expect(results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
 });
 
-test('the deploy artifact contains a real extension ZIP and static-host routing policy', async ({ page }) => {
+test('build:site emits the directly served extension ZIP and static-host routing policy', async ({ page }) => {
   const response = await page.request.get('/downloads/color-status-labeler-chrome.zip');
-  const deployPayload = await page.request.get('/downloads/color-status-labeler-chrome.bin');
   expect(response.ok()).toBe(true);
-  expect(deployPayload.ok()).toBe(true);
   expect(response.headers()['content-type']).toMatch(/zip|octet-stream/);
   const archive = await response.body();
   expect(archive.subarray(0, 4).toString('ascii')).toBe('PK\x03\x04');
-  expect(await deployPayload.body()).toEqual(archive);
 
   const policy = await page.request.get('/staticwebapp.config.json');
   const config = await policy.json() as { navigationFallback: { exclude: string[] }; globalHeaders: Record<string, string>; routes: Array<{ route: string; rewrite?: string; headers: Record<string, string> }> };
@@ -43,10 +40,11 @@ test('the deploy artifact contains a real extension ZIP and static-host routing 
   expect(config.globalHeaders['Content-Security-Policy']).toContain("worker-src 'self'");
   expect(config.globalHeaders['Permissions-Policy']).toContain('geolocation=()');
   expect(config.routes).toEqual(expect.arrayContaining([
-    expect.objectContaining({ route: '/downloads/color-status-labeler-chrome.zip', rewrite: '/downloads/color-status-labeler-chrome.bin', headers: expect.objectContaining({ 'Content-Type': 'application/zip' }) }),
+    expect.objectContaining({ route: '/downloads/color-status-labeler-chrome.zip', headers: expect.objectContaining({ 'Content-Type': 'application/zip', 'Content-Disposition': 'attachment; filename="color-status-labeler-chrome.zip"', 'Cache-Control': 'public, max-age=31536000, immutable' }) }),
     expect.objectContaining({ route: '/assets/*', headers: { 'Cache-Control': 'public, max-age=31536000, immutable' } }),
     expect.objectContaining({ route: '/sw.js', headers: { 'Cache-Control': 'no-cache', 'Service-Worker-Allowed': '/' } })
   ]));
+  expect(config.routes.some((route) => route.rewrite?.includes('color-status-labeler-chrome.bin'))).toBe(false);
 });
 
 test('mobile layout does not overflow and legal pages are present', async ({ page }) => {

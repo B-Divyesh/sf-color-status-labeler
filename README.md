@@ -34,11 +34,12 @@ npm install
 npm run dev          # WXT extension development mode
 npm run dev:site     # landing site development server
 npm run typecheck
+npm run lint
 npm test             # unit, site accessibility, mobile, and real extension tests
 npm run build        # extension ZIP + static site in dist/site/
 ```
 
-`npm test` uses Playwright 1.58.2 and expects its Chromium browser to be installed. The factory image already provides it; elsewhere run `npx playwright install chromium` once.
+`npm test` uses Playwright 1.58.2 and expects its Chromium browser to be installed. The factory image already provides it; elsewhere run `npx playwright install chromium` once. `npm run build:site` is the deployment build: it packages the extension and places the installable ZIP in the static-site output.
 
 ## Build outputs
 

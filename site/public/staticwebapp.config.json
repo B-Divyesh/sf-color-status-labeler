@@ -22,7 +22,6 @@
   "routes": [
     {
       "route": "/downloads/color-status-labeler-chrome.zip",
-      "rewrite": "/downloads/color-status-labeler-chrome.bin",
       "headers": {
         "Cache-Control": "public, max-age=31536000, immutable",
         "Content-Disposition": "attachment; filename=\"color-status-labeler-chrome.zip\"",

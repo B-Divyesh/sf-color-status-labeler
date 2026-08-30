@@ -5,7 +5,7 @@ export default defineConfig({
   timeout: 30_000,
   use: { baseURL: 'http://127.0.0.1:4173' },
   webServer: {
-    command: 'npm run build && npx vite preview --config site/vite.config.ts --host 127.0.0.1 --port 4173',
+    command: 'npm run build:site && npx vite preview --config site/vite.config.ts --host 127.0.0.1 --port 4173',
     url: 'http://127.0.0.1:4173',
     reuseExistingServer: true
   }

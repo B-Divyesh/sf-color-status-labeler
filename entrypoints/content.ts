@@ -2,7 +2,7 @@ import { defineContentScript } from 'wxt/utils/define-content-script';
 import { browser } from 'wxt/browser';
 import { colorDistance, toHex } from '../src/lib/color';
 import { getSiteConfig, saveSiteConfig, storageKey } from '../src/lib/storage';
-import { PATTERNS, type ColorProperty, type Pattern, type SiteConfig, type StatusRule } from '../src/lib/types';
+import { PATTERNS, type ColorProperty, type Pattern, type StatusRule } from '../src/lib/types';
 
 const HOST_ID = 'color-status-labeler-root';
 

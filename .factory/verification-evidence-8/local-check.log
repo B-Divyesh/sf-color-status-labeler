@@ -1,0 +1,76 @@
+
+> color-status-labeler@1.0.0 check
+> npm run typecheck && npm run lint && npm test && npm run build
+
+
+> color-status-labeler@1.0.0 typecheck
+> tsc --noEmit
+
+
+> color-status-labeler@1.0.0 lint
+> eslint .
+
+
+> color-status-labeler@1.0.0 test
+> vitest run && playwright test
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/unit/color.test.ts (4 tests) 5ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  05:16:44
+   Duration  971ms (transform 45ms, setup 0ms, collect 76ms, tests 5ms, environment 0ms, prepare 179ms)
+
+[WebServer] (node:9800) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:9819) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:9850) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:9870) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:9883) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 16 tests using 2 workers
+(node:9901) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9902) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9902) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9901) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+·····F(node:10501) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+·(node:10501) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+·········
+
+  1) tests/e2e/site.spec.ts:63:1 › a package-only release gets a new download URL instead of a stale Cache Storage ZIP 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32mtrue[39m
+    Received: [31mfalse[39m
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      68 |   await page.waitForFunction(async () => (await navigator.serviceWorker.getRegistration())?.active?.state === 'activated');
+      69 |   await page.reload();
+    > 70 |   await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+         |   ^
+      71 |
+      72 |   const freshArchive = await page.evaluate(async (archivePath) => {
+      73 |     const previousArchive = '/downloads/color-status-labeler-chrome.zip';
+        at /work/repo/tests/e2e/site.spec.ts:70:3
+
+    Error Context: test-results/site-a-package-only-releas-fecf5-f-a-stale-Cache-Storage-ZIP/error-context.md
+
+  1 failed
+    tests/e2e/site.spec.ts:63:1 › a package-only release gets a new download URL instead of a stale Cache Storage ZIP 
+  15 passed (38.1s)

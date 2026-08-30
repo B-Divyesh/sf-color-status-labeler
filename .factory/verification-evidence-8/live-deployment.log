@@ -1,0 +1,5 @@
+
+> color-status-labeler@1.0.0 verify:deployment
+> node scripts/verify-live-deployment.mjs
+
+Verified live deployment: https://color-status-labeler.sociobot.in (25,451 byte extension ZIP)

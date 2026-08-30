@@ -1,0 +1,66 @@
+
+> color-status-labeler@1.0.0 build
+> npm run build:site
+
+
+> color-status-labeler@1.0.0 build:site
+> node scripts/build.mjs
+
+
+> color-status-labeler@1.0.0 build:extension
+> wxt build && wxt zip
+
+[log] 
+WXT 0.21.4
+[info] Building chrome-mv3 for production with Vite 6.4.3
+[?25l⠋ Preparing...[K⠋ [1/3] background[K⠙ [1/3] background[K⠙ [2/3] content[K⠹ [2/3] content[K⠸ [2/3] content[K⠼ [2/3] content[K⠼ [3/3] popup[K⠴ [3/3] popup[K⠦ [3/3] popup[K⠧ [3/3] popup[K[K[?25h[K[?25h[success] Built extension in 895 ms
+  ├─ .output/chrome-mv3/manifest.json               539 B   
+  ├─ .output/chrome-mv3/popup.html                  2.70 kB 
+  ├─ .output/chrome-mv3/background.js               631 B   
+  ├─ .output/chrome-mv3/chunks/popup-CotrOwI5.js    5.67 kB 
+  ├─ .output/chrome-mv3/content-scripts/content.js  20.41 kB
+  ├─ .output/chrome-mv3/assets/popup-MTlXnSnt.css   5.03 kB 
+  ├─ .output/chrome-mv3/icon/128.png                2.96 kB 
+  ├─ .output/chrome-mv3/icon/16.png                 1.23 kB 
+  ├─ .output/chrome-mv3/icon/32.png                 2.80 kB 
+  └─ .output/chrome-mv3/icon/48.png                 4.47 kB 
+Σ Total size: 46.44 kB                            
+[success] Finished in 1.149 s
+[log] 
+WXT 0.21.4
+[info] Building chrome-mv3 for production with Vite 6.4.3
+[?25l⠋ Preparing...[K⠋ [1/3] background[K⠙ [1/3] background[K⠙ [2/3] content[K⠹ [2/3] content[K⠸ [2/3] content[K⠼ [2/3] content[K⠼ [3/3] popup[K⠴ [3/3] popup[K⠦ [3/3] popup[K[K[?25h[K[?25h[success] Built extension in 879 ms
+  ├─ .output/chrome-mv3/manifest.json               539 B   
+  ├─ .output/chrome-mv3/popup.html                  2.70 kB 
+  ├─ .output/chrome-mv3/background.js               631 B   
+  ├─ .output/chrome-mv3/chunks/popup-CotrOwI5.js    5.67 kB 
+  ├─ .output/chrome-mv3/content-scripts/content.js  20.41 kB
+  ├─ .output/chrome-mv3/assets/popup-MTlXnSnt.css   5.03 kB 
+  ├─ .output/chrome-mv3/icon/128.png                2.96 kB 
+  ├─ .output/chrome-mv3/icon/16.png                 1.23 kB 
+  ├─ .output/chrome-mv3/icon/32.png                 2.80 kB 
+  └─ .output/chrome-mv3/icon/48.png                 4.47 kB 
+Σ Total size: 46.44 kB                            
+[info] Zipping extension...
+[success] Zipped extension in 22 ms
+  └─ .output/color-status-labeler-1.0.0-chrome.zip  25.45 kB
+Σ Total size: 25.45 kB                            
+[success] Finished in 1.109 s
+
+> color-status-labeler@1.0.0 build:site:static
+> vite build --config site/vite.config.ts
+
+vite v6.4.3 building for production...
+transforming...
+✓ 8 modules transformed.
+rendering chunks...
+computing gzip size...
+../dist/site/404.html                             3.16 kB │ gzip: 1.08 kB
+../dist/site/terms/index.html                     4.09 kB │ gzip: 1.55 kB
+../dist/site/privacy/index.html                   4.29 kB │ gzip: 1.59 kB
+../dist/site/demo/index.html                      6.69 kB │ gzip: 2.14 kB
+../dist/site/index.html                           9.11 kB │ gzip: 2.96 kB
+../dist/site/assets/immutable/main-CtfnnNGY.css  14.56 kB │ gzip: 3.87 kB
+../dist/site/assets/immutable/main-DDWjWeZl.js    3.12 kB │ gzip: 1.37 kB
+✓ built in 208ms
+Built deployable site and extension archive: dist/site/downloads/color-status-labeler-chrome-0225e2c5ce3d892b.zip

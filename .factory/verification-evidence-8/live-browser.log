@@ -1,0 +1,5 @@
+
+> color-status-labeler@1.0.0 verify:browser
+> node scripts/verify-live-browser.mjs
+
+Verified live desktop, 390px mobile, keyboard, accessibility, privacy, and offline shell: https://color-status-labeler.sociobot.in

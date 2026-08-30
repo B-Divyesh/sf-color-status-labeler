@@ -42,4 +42,13 @@ recheck is recorded below after the static deployment picks up this commit.
 
 ## Live recheck
 
-Pending deployment of `d76dc04` at the time this file was first written.
+The repair commits were pushed to `main` (`d76dc04`, `a35aeaa`, then
+`65f2d06`) through the available static work-order path. As of the final
+check, `https://color-status-labeler.sociobot.in/` still served the older
+artifact: its homepage lacks “Download extension”, “COLOR-MATCHING LIMITS”,
+and `#route-announcement`. `node scripts/verify-live-browser.mjs
+https://color-status-labeler.sociobot.in/` therefore fails while waiting for
+the missing route announcement. This is a deployment propagation gap, not a
+remaining source or build defect. Re-run that command after the static host
+updates; it covers the live route-focus/Back requirement as well as the prior
+accessibility, privacy, and offline checks.

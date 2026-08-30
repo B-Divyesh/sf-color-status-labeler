@@ -3,8 +3,9 @@
 ## Status
 
 Repair commit `d76dc04` fixes every finding in [review-1.md](review-1.md).
-It has been pushed to `main`; final live deployment verification is pending the
-static deployment update.
+It and the evidence commits `a35aeaa` and `65f2d06` are pushed to `main`.
+The static host has not yet consumed those commits, so final live verification
+is pending deployment propagation.
 
 ## What changed
 
@@ -42,8 +43,11 @@ checks.
 
 ## Deploy and verify
 
-The deployable artifact remains `dist/site/`. After the static deployment
-updates, run:
+The deployable artifact remains `dist/site/`. The final cold check at
+`https://color-status-labeler.sociobot.in/` still served the prior artifact:
+it lacks “Download extension”, “COLOR-MATCHING LIMITS”, and
+`#route-announcement`; the live verifier correctly fails while looking for
+that missing route announcement. After the static deployment updates, run:
 
 ```sh
 npm run verify:deployment
@@ -55,5 +59,6 @@ demo**, navigate Back, and verify the destination `h1` receives focus.
 
 ## Known gaps
 
-No product gaps remain locally. This handoff will be amended with the live
-URL evidence once the pushed static deployment is observable.
+No source, test, build, or product gap remains locally. The only outstanding
+item is static-host propagation of the already pushed `main` branch. Once the
+host updates, the two commands above provide the required live evidence.

@@ -25,7 +25,7 @@ test('@claim:color-vision-audience landing page names the intended user and demo
   await expect(dashboard.locator('.added-label')).toHaveCount(3);
   await page.getByRole('switch', { name: 'Show labels' }).uncheck();
   await expect(dashboard).toHaveClass(/labels-off/);
-  await expect(page.locator('a[download]').first()).toHaveAttribute('href', /color-status-labeler-chrome\.zip/);
+  await expect(page.locator('a[download]').first()).toHaveAttribute('href', /^\/downloads\/color-status-labeler-chrome-[a-f0-9]{16}\.zip$/u);
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
 });
@@ -33,7 +33,9 @@ test('@claim:color-vision-audience landing page names the intended user and demo
 test('@claim:free-download demo links to the extension ZIP without a payment step and declares its response policy', async ({ page }) => {
   await page.goto('/demo/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Read sample statuses');
-  const response = await page.request.get('/downloads/color-status-labeler-chrome.zip');
+  const archivePath = await page.locator('a[download]').first().getAttribute('href');
+  expect(archivePath).toMatch(/^\/downloads\/color-status-labeler-chrome-[a-f0-9]{16}\.zip$/u);
+  const response = await page.request.get(archivePath!);
   expect(response.ok()).toBe(true);
   expect(response.headers()['content-type']).toMatch(/zip|octet-stream/);
   const archive = await response.body();
@@ -47,13 +49,54 @@ test('@claim:free-download demo links to the extension ZIP without a payment ste
   expect(config.responseOverrides['404']).toEqual({ rewrite: '/404.html', statusCode: 404 });
   expect(config.routes).toEqual(expect.arrayContaining([
     expect.objectContaining({ route: '/404', statusCode: 404 }),
-    expect.objectContaining({ route: '/downloads/color-status-labeler-chrome.zip', headers: expect.objectContaining({ 'Content-Type': 'application/zip', 'Content-Disposition': 'attachment; filename="color-status-labeler-chrome.zip"', 'Cache-Control': 'public, max-age=31536000, immutable' }) }),
-    expect.objectContaining({ route: '/assets/*', headers: { 'Cache-Control': 'public, max-age=31536000, immutable' } }),
+    expect.objectContaining({ route: '/downloads/*', headers: expect.objectContaining({ 'Content-Type': 'application/zip', 'Content-Disposition': 'attachment; filename="color-status-labeler-chrome.zip"', 'Cache-Control': 'public, max-age=31536000, immutable' }) }),
+    expect.objectContaining({ route: '/assets/immutable/*', headers: { 'Cache-Control': 'public, max-age=31536000, immutable' } }),
+    expect.objectContaining({ route: '/assets/*', headers: { 'Cache-Control': 'public, max-age=300, must-revalidate' } }),
     expect.objectContaining({ route: '/sw.js', headers: { 'Cache-Control': 'no-cache', 'Service-Worker-Allowed': '/' } })
   ]));
+  expect(config.routes.some((route) => route.route === '/downloads/color-status-labeler-chrome.zip')).toBe(false);
   expect(config.routes.some((route) => route.rewrite?.includes('color-status-labeler-chrome.bin'))).toBe(false);
   await page.goto('/404.html');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('This page is not here.');
+});
+
+test('a package-only release gets a new download URL instead of a stale Cache Storage ZIP', async ({ page }) => {
+  await page.goto('/');
+  const currentArchive = await page.locator('a[download]').first().getAttribute('href');
+  expect(currentArchive).toMatch(/^\/downloads\/color-status-labeler-chrome-[a-f0-9]{16}\.zip$/u);
+
+  await page.waitForFunction(async () => (await navigator.serviceWorker.getRegistration())?.active?.state === 'activated');
+  await page.reload();
+  await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+
+  const freshArchive = await page.evaluate(async (archivePath) => {
+    const previousArchive = '/downloads/color-status-labeler-chrome.zip';
+    const cacheName = (await caches.keys()).find((name) => name.startsWith('csl-site-'));
+    if (!cacheName) throw new Error('The active site cache is unavailable.');
+    const previousCache = await caches.open(cacheName);
+    await previousCache.put(previousArchive, new Response('old extension package', {
+      headers: { 'Content-Type': 'application/zip' }
+    }));
+
+    const previous = await (await previousCache.match(previousArchive))?.text();
+    const response = await fetch(archivePath);
+    const bytes = new Uint8Array(await response.arrayBuffer());
+    return {
+      previousArchive,
+      previous,
+      cacheName,
+      status: response.status,
+      signature: String.fromCharCode(...bytes.slice(0, 4)),
+      size: bytes.length
+    };
+  }, currentArchive!);
+
+  expect(freshArchive.previousArchive).not.toBe(currentArchive);
+  expect(freshArchive.previous).toBe('old extension package');
+  expect(freshArchive.cacheName).toMatch(/^csl-site-/u);
+  expect(freshArchive.status).toBe(200);
+  expect(freshArchive.signature).toBe('PK\x03\x04');
+  expect(freshArchive.size).toBeGreaterThan(1_000);
 });
 
 test('every route has canonical, social, Twitter, theme, and Apple touch metadata with a 1200 by 630 product image', async ({ page }) => {
@@ -233,7 +276,7 @@ test('@claim:offline-demo the sample guide remains available offline after its f
     expect(shellRequestsSucceed).toEqual(expect.arrayContaining([
       expect.objectContaining({ url: '/demo/', ok: true })
     ]));
-    expect(shellRequestsSucceed.some(({ url, ok }) => ok && /^\/assets\/main-[\w-]+\.js$/u.test(url))).toBe(true);
+    expect(shellRequestsSucceed.some(({ url, ok }) => ok && /^\/assets\/immutable\/main-[\w-]+\.js$/u.test(url))).toBe(true);
     expect(shellRequestsSucceed.every(({ ok }) => ok)).toBe(true);
     await page.reload();
     await context.setOffline(true);

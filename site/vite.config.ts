@@ -3,6 +3,12 @@ import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
+const extensionArchiveUrl = process.env.CSL_EXTENSION_ARCHIVE_URL ?? '/downloads/color-status-labeler-chrome-unbuilt.zip';
+
+if (!/^\/downloads\/color-status-labeler-chrome-(?:[a-f0-9]{16}|unbuilt)\.zip$/u.test(extensionArchiveUrl)) {
+  throw new Error('CSL_EXTENSION_ARCHIVE_URL must be a content-addressed Color Status Labeler ZIP path.');
+}
+
 function filesIn(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const path = join(directory, entry.name);
@@ -28,10 +34,20 @@ export default defineConfig({
         privacy: resolve(import.meta.dirname, 'privacy/index.html'),
         terms: resolve(import.meta.dirname, 'terms/index.html'),
         notFound: resolve(import.meta.dirname, '404.html')
+      },
+      output: {
+        entryFileNames: 'assets/immutable/[name]-[hash].js',
+        chunkFileNames: 'assets/immutable/[name]-[hash].js',
+        assetFileNames: 'assets/immutable/[name]-[hash][extname]'
       }
     }
   },
   plugins: [{
+    name: 'release-download-link',
+    transformIndexHtml(html) {
+      return html.replaceAll('__CSL_EXTENSION_ARCHIVE_URL__', extensionArchiveUrl);
+    }
+  }, {
     name: 'offline-shell',
     writeBundle(options) {
       const outDir = options.dir;
@@ -41,10 +57,13 @@ export default defineConfig({
         .sort();
       const shell = ['/', '/demo/', '/privacy/', '/terms/', '/404.html', '/icon.svg', '/robots.txt', '/sitemap.xml', ...assets];
       const revision = createHash('sha256')
-        .update(shell.map((url) => {
-          const file = url === '/' ? 'index.html' : url.endsWith('/') ? `${url.slice(1)}index.html` : url.slice(1);
-          return `${url}:${readFileSync(resolve(outDir, file))}`;
-        }).join('|'))
+        .update([
+          `extension:${extensionArchiveUrl}`,
+          ...shell.map((url) => {
+            const file = url === '/' ? 'index.html' : url.endsWith('/') ? `${url.slice(1)}index.html` : url.slice(1);
+            return `${url}:${readFileSync(resolve(outDir, file))}`;
+          })
+        ].join('|'))
         .digest('hex')
         .slice(0, 12);
       writeFileSync(resolve(outDir, 'sw.js'), serviceWorkerSource(`csl-site-${revision}`, shell));

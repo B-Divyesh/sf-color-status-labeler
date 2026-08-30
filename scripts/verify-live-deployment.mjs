@@ -2,11 +2,10 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { resolve } from 'node:path';
+import { join, relative, resolve } from 'node:path';
 import { chromium } from '@playwright/test';
 
 const base = new URL(process.argv[2] ?? 'https://color-status-labeler.sociobot.in/');
-const archiveUrl = new URL('/downloads/color-status-labeler-chrome.zip', base);
 const homepageUrl = new URL('/', base);
 const workerUrl = new URL('/sw.js', base);
 const notFoundUrl = new URL('/404', base);
@@ -21,6 +20,20 @@ function header(response, name) {
 
 const digest = (value) => createHash('sha256').update(value).digest('hex');
 
+function filesIn(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const file = join(directory, entry.name);
+    return entry.isDirectory() ? filesIn(file) : [file];
+  });
+}
+
+const homepage = await fetch(homepageUrl, { redirect: 'error', cache: 'no-store' });
+if (!homepage.ok) fail(`${homepageUrl} returned HTTP ${homepage.status}.`);
+const homepageSource = await homepage.text();
+const archiveMatch = homepageSource.match(/href="(\/downloads\/color-status-labeler-chrome-[a-f0-9]{16}\.zip)"/u);
+if (!archiveMatch) fail('homepage does not link to a content-addressed extension ZIP.');
+const archiveUrl = new URL(archiveMatch[1], base);
+
 const archive = await fetch(archiveUrl, { redirect: 'error', cache: 'no-store' });
 if (!archive.ok) fail(`${archiveUrl} returned HTTP ${archive.status}, expected 200.`);
 if (!/(?:application\/zip|application\/octet-stream|application\/x-zip-compressed)/iu.test(header(archive, 'content-type'))) {
@@ -34,9 +47,11 @@ if (!/max-age=31536000/iu.test(header(archive, 'cache-control')) || !/immutable/
 }
 const bytes = Buffer.from(await archive.arrayBuffer());
 if (bytes.subarray(0, 4).toString('ascii') !== 'PK\u0003\u0004') fail(`${archiveUrl} did not begin with a ZIP signature.`);
-const localArchive = resolve('dist/site/downloads/color-status-labeler-chrome.zip');
-if (existsSync(localArchive)) {
-  const expected = readFileSync(localArchive);
+const localArchive = existsSync(resolve('dist/site/downloads'))
+  ? readdirSync(resolve('dist/site/downloads')).find((name) => /^color-status-labeler-chrome-[a-f0-9]{16}\.zip$/u.test(name))
+  : undefined;
+if (localArchive) {
+  const expected = readFileSync(resolve('dist/site/downloads', localArchive));
   if (digest(bytes) !== digest(expected)) fail(`${archiveUrl} does not match the locally built release archive.`);
 }
 
@@ -70,11 +85,7 @@ try {
   rmSync(directory, { recursive: true, force: true });
 }
 
-const [homepage, worker] = await Promise.all([
-  fetch(homepageUrl, { redirect: 'error', cache: 'no-store' }),
-  fetch(workerUrl, { redirect: 'error', cache: 'no-store' })
-]);
-if (!homepage.ok) fail(`${homepageUrl} returned HTTP ${homepage.status}.`);
+const worker = await fetch(workerUrl, { redirect: 'error', cache: 'no-store' });
 if (!header(homepage, 'content-security-policy').includes("default-src 'self'")) fail('homepage is missing the self-only CSP.');
 if (!header(homepage, 'permissions-policy').includes('geolocation=()')) fail('homepage is missing the restrictive Permissions Policy.');
 if (!worker.ok || !/no-cache/iu.test(header(worker, 'cache-control')) || header(worker, 'service-worker-allowed') !== '/') {
@@ -91,6 +102,7 @@ if (notFound.status !== 404 || !(await notFound.text()).includes('This page is n
 
 const siteRoot = resolve('dist/site');
 if (existsSync(siteRoot)) {
+  const assetsRoot = resolve(siteRoot, 'assets');
   const identityFiles = [
     ['/', 'index.html'],
     ['/demo/', 'demo/index.html'],
@@ -101,7 +113,11 @@ if (existsSync(siteRoot)) {
     ['/icon/apple-touch-icon.png', 'icon/apple-touch-icon.png'],
     ['/robots.txt', 'robots.txt'],
     ['/sitemap.xml', 'sitemap.xml'],
-    ...readdirSync(resolve(siteRoot, 'assets')).map((name) => [`/assets/${name}`, `assets/${name}`])
+    ...readdirSync(resolve(siteRoot, 'downloads')).map((name) => [`/downloads/${name}`, `downloads/${name}`]),
+    ...filesIn(assetsRoot).map((file) => {
+      const asset = relative(assetsRoot, file).replaceAll('\\', '/');
+      return [`/assets/${asset}`, `assets/${asset}`];
+    })
   ];
   for (const [url, filename] of identityFiles) {
     const response = await fetch(new URL(url, base), { cache: 'no-store' });

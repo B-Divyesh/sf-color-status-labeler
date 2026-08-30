@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process';
-import { closeSync, cpSync, mkdirSync, openSync, readSync, readdirSync, rmSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { closeSync, cpSync, mkdirSync, openSync, readFileSync, readSync, readdirSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
@@ -8,15 +9,24 @@ rmSync(resolve(root, '.output'), { recursive: true, force: true });
 
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 execFileSync(npm, ['run', 'build:extension'], { cwd: root, stdio: 'inherit' });
-execFileSync(npm, ['run', 'build:site:static'], { cwd: root, stdio: 'inherit' });
 
 const output = resolve(root, '.output');
 const archive = readdirSync(output).find((name) => name.endsWith('-chrome.zip'));
 if (!archive) throw new Error('WXT did not produce a Chrome extension archive.');
+const sourceArchive = resolve(output, archive);
+const archiveDigest = createHash('sha256').update(readFileSync(sourceArchive)).digest('hex');
+const archiveName = `color-status-labeler-chrome-${archiveDigest.slice(0, 16)}.zip`;
+const archiveUrl = `/downloads/${archiveName}`;
+execFileSync(npm, ['run', 'build:site:static'], {
+  cwd: root,
+  stdio: 'inherit',
+  env: { ...process.env, CSL_EXTENSION_ARCHIVE_URL: archiveUrl }
+});
+
 const downloads = resolve(root, 'dist/site/downloads');
 mkdirSync(downloads, { recursive: true });
-cpSync(resolve(output, archive), resolve(downloads, 'color-status-labeler-chrome.zip'));
-const packagedArchive = resolve(downloads, 'color-status-labeler-chrome.zip');
+cpSync(sourceArchive, resolve(downloads, archiveName));
+const packagedArchive = resolve(downloads, archiveName);
 const descriptor = openSync(packagedArchive, 'r');
 const signature = Buffer.alloc(4);
 try {
@@ -27,4 +37,4 @@ try {
   closeSync(descriptor);
 }
 execFileSync('unzip', ['-tqq', packagedArchive], { stdio: 'inherit' });
-console.log('Built deployable site and extension archive: dist/site');
+console.log(`Built deployable site and extension archive: dist/site${archiveUrl}`);

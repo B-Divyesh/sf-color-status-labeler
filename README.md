@@ -17,7 +17,7 @@ Color matching is approximate. Themes, gradients, animations, and site redesigns
 ## Install the packaged build
 
 1. Run `npm install && npm run build` or download the ZIP from the landing page.
-2. Unzip `dist/site/downloads/color-status-labeler-chrome.zip`.
+2. Unzip the content-addressed `dist/site/downloads/color-status-labeler-chrome-<digest>.zip` file.
 3. Open `chrome://extensions` (or `edge://extensions`).
 4. Turn on Developer mode, choose **Load unpacked**, and select the unzipped folder.
 5. Open a dashboard, select the extension, and choose **Pick a status color**.
@@ -55,9 +55,9 @@ npm run build        # extension ZIP + static site in dist/site/
 
 - `.output/chrome-mv3/`: unpacked Manifest V3 extension.
 - `dist/site/`: deployable static site; `index.html` is at this exact root.
-- `dist/site/downloads/color-status-labeler-chrome.zip`: packaged extension linked by the site.
+- `dist/site/downloads/color-status-labeler-chrome-<digest>.zip`: packaged extension linked by the site. The digest changes with the package so returning users cannot receive an old release from cache.
 
-Deploy only `dist/site/`. Its included `staticwebapp.config.json` preserves the extension ZIP and service-worker routes, sets immutable caching for hashed assets, and applies the site response policy. Infrastructure, DNS, and billing are outside this repository.
+Deploy only `dist/site/`. Its included `staticwebapp.config.json` preserves the extension ZIP and service-worker routes, applies immutable caching only to content-addressed downloads and Vite's hashed code bundles, revalidates fixed artwork, and applies the site response policy. Infrastructure, DNS, and billing are outside this repository.
 
 ## Architecture and privacy
 

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "color-vision-audience",
+    "claim": "Color Status Labeler is for people with color-vision deficiency who need readable dashboard and map statuses.",
+    "where": "landing first screen",
+    "test": "npm test -- --grep @claim:color-vision-audience",
+    "sandbox": "fresh browser context; assert the first screen names the audience and exposes the sample-data action"
+  },
+  {
+    "id": "demo-sandbox",
+    "claim": "Try the sample dispatch board without saving changes as real extension rules.",
+    "where": "landing primary action and /demo banner",
+    "test": "npm test -- --grep @claim:demo-sandbox",
+    "sandbox": "fresh browser context; modify sample data, assert only the demo: storage key exists, reset it, then leave demo mode"
+  },
+  {
+    "id": "download-extension",
+    "claim": "The demo links to an installable Chrome extension ZIP.",
+    "where": "site header and demo page",
+    "test": "npm test -- --grep @claim:download-extension",
+    "sandbox": "open /demo; request the linked artifact; assert ZIP signature, MIME policy, and static 404 response policy"
+  },
+  {
+    "id": "free-download",
+    "claim": "The extension is free to download without a payment step.",
+    "where": "landing first-screen product facts",
+    "test": "npm test -- --grep @claim:free-download",
+    "sandbox": "open /demo; request the direct download link and assert it serves the extension ZIP without a payment route"
+  },
+  {
+    "id": "no-account",
+    "claim": "No account is required and the demo sends no requests to third parties.",
+    "where": "landing facts, privacy copy, and footer",
+    "test": "npm test -- --grep @claim:no-account",
+    "sandbox": "fresh /demo browser context; record requests, cookies, storage, and account-form controls"
+  },
+  {
+    "id": "core-labeling",
+    "claim": "Label recurring color-only statuses with a word and a pattern.",
+    "where": "landing, demo, README, and extension package",
+    "test": "npm test -- --grep @claim:core-labeling",
+    "sandbox": "fresh Chromium extension profile on /demo; train the green sample status and observe its badge and legend"
+  },
+  {
+    "id": "local-rules",
+    "claim": "Rules stay in Chrome local extension storage.",
+    "where": "landing facts, privacy page, README, and extension popup",
+    "test": "npm test -- --grep @claim:local-rules",
+    "sandbox": "fresh Chromium extension profile on /demo; save a rule and inspect chrome.storage.local for that origin only"
+  },
+  {
+    "id": "click-through",
+    "claim": "Status badges do not block page controls.",
+    "where": "landing feature explanation and README",
+    "test": "npm test -- --grep @claim:click-through",
+    "sandbox": "fresh Chromium extension profile on /demo; inspect the rendered badge pointer-events behavior"
+  },
+  {
+    "id": "rules-return",
+    "claim": "Saved rules return on the same site.",
+    "where": "landing setup steps and README",
+    "test": "npm test -- --grep @claim:rules-return",
+    "sandbox": "fresh Chromium extension profile on /demo; save a rule, reload, and observe the restored legend and badge"
+  },
+  {
+    "id": "offline-demo",
+    "claim": "The sample guide remains available offline after its first visit.",
+    "where": "demo offline notice and README",
+    "test": "npm test -- --grep @claim:offline-demo",
+    "sandbox": "dedicated fresh browser context; activate the service worker at /demo, set offline, reload, and assert the sample heading and offline notice"
+  }
+]

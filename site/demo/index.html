@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Try Color Status Labeler with sample dispatch statuses. The sample never changes your real extension rules." />
+    <meta name="theme-color" content="#F6F0DE" />
+    <link rel="canonical" href="https://color-status-labeler.sociobot.in/demo/" />
+    <title>Demo — Color Status Labeler</title>
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to demo</a>
+    <p id="offline-note" class="offline-note" role="status" hidden>You’re offline. This sample remains available after its first visit.</p>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Color Status Labeler home"><span aria-hidden="true">A/01</span> Color Status Labeler</a>
+      <nav aria-label="Primary navigation">
+        <a href="/">Home</a>
+        <a href="/demo/" aria-current="page">Demo</a>
+        <a href="/privacy/">Privacy</a>
+        <a class="mini-download" href="/downloads/color-status-labeler-chrome.zip" download>Download</a>
+      </nav>
+    </header>
+
+    <main id="main" class="demo-page" data-demo-app>
+      <aside class="demo-banner" aria-label="Demo controls">
+        <p><strong>Demo — sample data, nothing is saved</strong><span>Changes stay separate from your extension rules.</span></p>
+        <div><button class="demo-button" type="button" data-demo-reset>Reset demo</button><a class="demo-button" href="/" data-demo-start-real>Start for real</a></div>
+      </aside>
+
+      <section class="demo-intro" aria-labelledby="demo-title">
+        <p class="kicker">Sample dispatch board</p>
+        <h1 id="demo-title">Read sample statuses without relying on color.</h1>
+        <p>Change a sample label or pattern below. The demo uses its own browser storage and never reads your extension rules.</p>
+      </section>
+
+      <section class="demo-workbench" aria-labelledby="sample-title">
+        <div class="demo-heading"><div><h2 id="sample-title">North hub dispatch</h2><p>Three recurring signals, already labeled with words and patterns.</p></div></div>
+        <div class="dashboard demo-dashboard" aria-label="Sample dispatch status dashboard">
+          <div class="dash-top"><strong>North hub / Morning shift</strong><span>08:42 UTC</span></div>
+          <div class="dash-grid">
+            <article data-demo-status="ready"><span class="dot green"></span><strong>Dock 03</strong><small>Forklift lane</small><span class="added-label stripes" data-demo-label>Ready</span></article>
+            <article data-demo-status="waiting"><span class="dot yellow"></span><strong>Gate 07</strong><small>Inbound check</small><span class="added-label dots" data-demo-label>Waiting</span></article>
+            <article data-demo-status="blocked"><span class="dot red"></span><strong>Lift bank</strong><small>Service queue</small><span class="added-label crosshatch" data-demo-label>Blocked</span></article>
+          </div>
+          <div class="demo-legend" aria-label="Sample status legend"><span>STATUS TAPE</span><b class="stripes" data-demo-legend="ready">Ready</b><b class="dots" data-demo-legend="waiting">Waiting</b><b class="crosshatch" data-demo-legend="blocked">Blocked</b></div>
+        </div>
+      </section>
+
+      <section class="demo-editor" aria-labelledby="editor-title">
+        <div><p class="kicker">Practice change</p><h2 id="editor-title">Change one sample label</h2><p>Use a word and a pattern together. Reset restores the original sample.</p></div>
+        <form data-demo-form>
+          <label for="demo-status">Sample status</label>
+          <select id="demo-status" name="status">
+            <option value="ready">Dock 03</option><option value="waiting">Gate 07</option><option value="blocked">Lift bank</option>
+          </select>
+          <label for="demo-label">Status label</label>
+          <input id="demo-label" name="label" type="text" maxlength="32" required aria-describedby="demo-form-error" />
+          <fieldset><legend>Pattern</legend><div class="demo-patterns"><label><input type="radio" name="pattern" value="stripes" /> Stripes</label><label><input type="radio" name="pattern" value="dots" /> Dots</label><label><input type="radio" name="pattern" value="crosshatch" /> Crosshatch</label><label><input type="radio" name="pattern" value="bars" /> Bars</label></div></fieldset>
+          <p id="demo-form-error" class="field-error" role="alert"></p>
+          <button class="button primary" type="submit">Apply sample label</button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div><strong>Color Status Labeler</strong><p>A local utility for readable color status.</p></div>
+      <nav aria-label="Legal"><a href="/demo/" aria-current="page">Demo</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
+      <p class="disclosure">Built by Param Factory · Version 1.0.0 · Sample data is invented and stored only in the demo namespace.</p>
+    </footer>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

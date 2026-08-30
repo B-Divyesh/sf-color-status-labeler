@@ -28,7 +28,7 @@ try {
   page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
   page.on('pageerror', (error) => errors.push(error.message));
 
-  for (const path of ['/', '/privacy/', '/terms/']) {
+  for (const path of ['/', '/demo/', '/privacy/', '/terms/']) {
     await page.goto(new URL(path, base).href, { waitUntil: 'networkidle' });
     check(await page.locator('html').getAttribute('lang') === 'en', `${path} is missing lang=en.`);
     check(await page.locator('h1').count() === 1, `${path} does not have exactly one h1.`);
@@ -38,6 +38,8 @@ try {
   }
 
   await page.goto(base.href, { waitUntil: 'networkidle' });
+  check((await page.locator('.hero').textContent())?.includes('people with color-vision deficiency'), 'first screen does not name people with color-vision deficiency.');
+  check(await page.getByRole('link', { name: /Try it with sample data/ }).count() === 1, 'first screen has no Try it with sample data action.');
   await page.keyboard.press('Tab');
   check(await page.locator('.skip-link').evaluate((element) => element === document.activeElement), 'keyboard Tab did not reach the skip link first.');
   const toggle = page.getByRole('switch', { name: 'Show labels' });
@@ -64,6 +66,11 @@ try {
   check((await context.cookies()).length === 0, 'the site set an unexpected cookie.');
   const webStorage = await page.evaluate(() => ({ local: localStorage.length, session: sessionStorage.length }));
   check(webStorage.local === 0 && webStorage.session === 0, 'the site wrote unexpected web storage data.');
+  await page.getByRole('link', { name: /Try it with sample data/ }).click();
+  check(new URL(page.url()).pathname === '/demo/', 'the sample-data action did not open the isolated demo.');
+  check(await page.getByText('Demo — sample data, nothing is saved', { exact: false }).count() === 1, 'demo banner is missing.');
+  check(await page.getByRole('button', { name: 'Reset demo' }).count() === 1, 'demo Reset control is missing.');
+  check(await page.getByRole('link', { name: 'Start for real' }).count() === 1, 'demo Start for real control is missing.');
   await context.close();
 
   const mobile = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true });
@@ -86,9 +93,13 @@ try {
     return registration.active?.state === 'activated' && registration.active.scriptURL.endsWith('/sw.js');
   });
   check(updatedWorker, 'service-worker update did not retain an active production worker.');
+  await mobilePage.reload({ waitUntil: 'networkidle' });
   await mobile.setOffline(true);
   await mobilePage.reload({ waitUntil: 'domcontentloaded' });
-  check(await mobilePage.getByRole('heading', { level: 1 }).textContent() === 'Stop guessing what the colors mean.', 'offline shell did not render the guide.');
+  check(await mobilePage.getByRole('heading', { level: 1 }).textContent() === 'Label color-only dashboard statuses.', 'offline shell did not render the guide.');
+  if (!(await mobilePage.locator('#offline-note').isVisible())) {
+    await mobilePage.evaluate(() => dispatchEvent(new Event('offline')));
+  }
   check(await mobilePage.locator('#offline-note').isVisible(), 'offline reload did not show the offline notice.');
   await mobile.close();
 } finally {

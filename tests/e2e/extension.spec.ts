@@ -17,7 +17,7 @@ function contrastRatio(first: string, second: string) {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-test('picker trains a rule and applies a click-through overlay', async () => {
+test('@claim:core-labeling @claim:local-rules @claim:click-through @claim:rules-return picker trains a local rule and applies a click-through overlay', async () => {
   const extensionPath = mkdtempSync(resolve(tmpdir(), 'color-status-labeler-'));
   execFileSync('unzip', ['-q', resolve('.output/color-status-labeler-1.0.0-chrome.zip'), '-d', extensionPath]);
   const context = await chromium.launchPersistentContext('', {
@@ -29,7 +29,7 @@ test('picker trains a rule and applies a click-through overlay', async () => {
     let [worker] = context.serviceWorkers();
     worker ??= await context.waitForEvent('serviceworker');
     const page = await context.newPage();
-    await page.goto('/');
+    await page.goto('/demo/');
     const origin = new URL(page.url()).origin;
     const host = page.locator('#color-status-labeler-root');
     await expect(host).toBeAttached();
@@ -74,6 +74,9 @@ test('picker trains a rule and applies a click-through overlay', async () => {
       return (await chrome.storage.local.get(key))[key];
     }, { origin });
     expect(saved.rules).toMatchObject([{ label: 'Ready', pattern: 'dots', color: '#4A985C' }]);
+    await page.reload();
+    await expect(host.locator('.legend')).toContainText('Ready');
+    await expect(host.locator('.badge')).toContainText('Ready');
 
     await worker.evaluate(async () => {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -81,7 +84,7 @@ test('picker trains a rule and applies a click-through overlay', async () => {
       await chrome.tabs.sendMessage(tab.id, { type: 'START_PICKER' });
     });
     await expect(host.locator('.picker-bar')).toBeVisible();
-    await page.locator('.hero .button.primary').focus();
+    await page.getByRole('button', { name: 'Apply sample label' }).focus();
     await page.keyboard.press('Enter');
     await expect(host.getByRole('dialog')).toBeVisible();
     await page.keyboard.press('Escape');

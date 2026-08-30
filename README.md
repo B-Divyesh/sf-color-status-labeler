@@ -1,6 +1,6 @@
 # Color Status Labeler
 
-Color Status Labeler is a free, local-first browser extension for people who cannot reliably infer dashboard or map status from red, green, or yellow alone. Teach it the recurring status colors on a site and it adds compact word-and-pattern badges plus a live legend.
+Color Status Labeler is a local browser extension for people with color-vision deficiency who need dashboards and maps to show readable status words and patterns. Teach it recurring status colors on a site and it adds a compact badge and legend.
 
 The companion site is designed for `https://color-status-labeler.sociobot.in`.
 
@@ -9,9 +9,8 @@ The companion site is designed for `https://color-status-labeler.sociobot.in`.
 - Samples a rendered background, border, or text color from a page.
 - Lets the user assign a plain-language label and one of four distinct patterns.
 - Finds matching elements on that site and adds click-through badges and a legend.
-- Watches dynamic pages for status changes without changing links, forms, or server data.
+- Restores saved rules when you return to the same site.
 - Stores per-site rules only in `chrome.storage.local`.
-- Exports and imports a JSON backup on explicit user action.
 
 Color matching is approximate. Themes, gradients, animations, and site redesigns can cause missed or incorrect labels. This is an operating aid, not a WCAG audit or a source of truth for safety-critical decisions.
 
@@ -23,7 +22,18 @@ Color matching is approximate. Themes, gradients, animations, and site redesigns
 4. Turn on Developer mode, choose **Load unpacked**, and select the unzipped folder.
 5. Open a dashboard, select the extension, and choose **Pick a status color**.
 
-Browser-protected pages such as extension stores and settings cannot be labeled.
+The extension does not collect accounts or analytics. Its public site makes no
+third-party runtime request.
+
+## Try the isolated sample
+
+Open [the sample dispatch board](https://color-status-labeler.sociobot.in/demo/)
+or choose **Try it with sample data** on the landing page. The demo starts with
+three invented statuses and stores any practice changes only under the separate
+`demo:color-status-labeler:sample-v1` browser-storage key. **Reset demo**
+restores the sample. **Start for real** removes the demo key before returning
+to the installation page. See [.factory/demo.md](.factory/demo.md) for the
+sample and storage boundary.
 
 ## Develop and verify
 
@@ -39,7 +49,7 @@ npm test             # unit, site accessibility, mobile, and real extension test
 npm run build        # extension ZIP + static site in dist/site/
 ```
 
-`npm test` uses Playwright 1.58.2 and expects its Chromium browser to be installed. The factory image already provides it; elsewhere run `npx playwright install chromium` once. `npm run build:site` is the deployment build: it packages the extension and places the installable ZIP in the static-site output.
+`npm test` uses Playwright 1.58.2 and expects its Chromium browser to be installed. The factory image already provides it; elsewhere run `npx playwright install chromium` once. `npm run build:site` is the deployment build: it packages the extension and places the installable ZIP in the static-site output. The claim regression manifest is [.factory/claims.json](.factory/claims.json).
 
 ## Build outputs
 
@@ -55,7 +65,7 @@ Deploy only `dist/site/`. Its included `staticwebapp.config.json` preserves the 
 - Vite + vanilla TypeScript for the static site.
 - Permissions: `storage` for local rules and `activeTab` for starting the picker from the popup. A content script runs on HTTP(S) pages to read computed colors and render isolated Shadow DOM overlays.
 - No account, analytics, cookies, remote APIs, third-party runtime scripts, or downloaded fonts.
-- See [privacy](site/privacy/index.html), [terms](site/terms/index.html), the [visual system](.factory/design.md), and the [handoff](.factory/handoff.md).
+- See [privacy](site/privacy/index.html), [terms](site/terms/index.html), the [visual system](.factory/design.md), [.factory/demo.md](.factory/demo.md), and the [handoff](.factory/handoff.md).
 
 ## License
 

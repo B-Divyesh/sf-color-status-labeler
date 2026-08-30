@@ -9,6 +9,7 @@ const base = new URL(process.argv[2] ?? 'https://color-status-labeler.sociobot.i
 const archiveUrl = new URL('/downloads/color-status-labeler-chrome.zip', base);
 const homepageUrl = new URL('/', base);
 const workerUrl = new URL('/sw.js', base);
+const notFoundUrl = new URL('/404', base);
 
 function fail(message) {
   throw new Error(`Deployment verification failed: ${message}`);
@@ -83,13 +84,19 @@ const workerSource = await worker.text();
 if (!workerSource.includes('self.skipWaiting()') || !workerSource.includes('self.clients.claim()')) {
   fail('service worker does not contain the immediate update activation path.');
 }
+const notFound = await fetch(notFoundUrl, { redirect: 'error', cache: 'no-store' });
+if (notFound.status !== 404 || !(await notFound.text()).includes('This page is not here.')) {
+  fail('/404 is not served as the styled 404 response with HTTP status 404.');
+}
 
 const siteRoot = resolve('dist/site');
 if (existsSync(siteRoot)) {
   const identityFiles = [
     ['/', 'index.html'],
+    ['/demo/', 'demo/index.html'],
     ['/privacy/', 'privacy/index.html'],
     ['/terms/', 'terms/index.html'],
+    ['/404.html', '404.html'],
     ['/icon.svg', 'icon.svg'],
     ['/robots.txt', 'robots.txt'],
     ['/sitemap.xml', 'sitemap.xml'],

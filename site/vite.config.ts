@@ -24,8 +24,10 @@ export default defineConfig({
     rollupOptions: {
       input: {
         home: resolve(import.meta.dirname, 'index.html'),
+        demo: resolve(import.meta.dirname, 'demo/index.html'),
         privacy: resolve(import.meta.dirname, 'privacy/index.html'),
-        terms: resolve(import.meta.dirname, 'terms/index.html')
+        terms: resolve(import.meta.dirname, 'terms/index.html'),
+        notFound: resolve(import.meta.dirname, '404.html')
       }
     }
   },
@@ -37,7 +39,7 @@ export default defineConfig({
       const assets = filesIn(resolve(outDir, 'assets'))
         .map((file) => `/${relative(outDir, file).replaceAll('\\', '/')}`)
         .sort();
-      const shell = ['/', '/privacy/', '/terms/', '/icon.svg', '/robots.txt', '/sitemap.xml', ...assets];
+      const shell = ['/', '/demo/', '/privacy/', '/terms/', '/404.html', '/icon.svg', '/robots.txt', '/sitemap.xml', ...assets];
       const revision = createHash('sha256')
         .update(shell.map((url) => {
           const file = url === '/' ? 'index.html' : url.endsWith('/') ? `${url.slice(1)}index.html` : url.slice(1);

@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Add words and patterns to recurring color-only statuses on browser dashboards and maps. Free, local-first Chrome extension." />
+    <meta name="description" content="Add words and patterns to color-only dashboard and map statuses. A local Chrome extension for people with color-vision deficiency." />
     <meta name="theme-color" content="#F6F0DE" />
     <link rel="canonical" href="https://color-status-labeler.sociobot.in/" />
-    <title>Color Status Labeler — stop guessing what the colors mean</title>
+    <title>Color Status Labeler — label color-only statuses</title>
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="/src/style.css" />
   </head>
@@ -16,6 +16,7 @@
     <header class="site-header">
       <a class="brand" href="/" aria-label="Color Status Labeler home"><span aria-hidden="true">A/01</span> Color Status Labeler</a>
       <nav aria-label="Primary navigation">
+        <a href="/demo/">Try the demo</a>
         <a href="#how">How it works</a>
         <a href="#limits">Good to know</a>
         <a class="mini-download" href="/downloads/color-status-labeler-chrome.zip" download>Download</a>
@@ -25,21 +26,22 @@
     <main id="main">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow"><span>Free browser extension</span><span>Local only</span></p>
-          <h1 id="hero-title">Stop guessing what the colors mean.</h1>
-          <p class="lede">Teach your browser that green means “ready,” yellow means “waiting,” or whatever your dashboard actually means. It adds a word and a pattern—without changing the page underneath.</p>
+          <p class="eyebrow"><span>Browser extension</span><span>Local rules</span></p>
+          <h1 id="hero-title">Label color-only dashboard statuses.</h1>
+          <p class="lede">For people with color-vision deficiency who need dashboard and map statuses shown with readable words and patterns.</p>
           <div class="hero-actions">
-            <a class="button primary" href="/downloads/color-status-labeler-chrome.zip" download>Download for Chrome <span aria-hidden="true">↓</span></a>
-            <a class="text-link" href="#how">See the 3-step setup</a>
+            <a class="button primary" data-demo href="/demo/">Try it with sample data <span aria-hidden="true">→</span></a>
+            <a class="button secondary" href="/downloads/color-status-labeler-chrome.zip" download>Download for Chrome <span aria-hidden="true">↓</span></a>
           </div>
-          <p class="version-note">Version 1.0 · Chrome / Edge · No account</p>
+          <p class="action-note">Open a sample dispatch board. Change labels without changing your own rules.</p>
+          <ul class="plain-facts" aria-label="Product facts"><li>Rules stay in Chrome local storage.</li><li>Sample guide works offline after its first visit.</li><li>Free to download.</li></ul>
         </div>
         <figure class="hero-art">
           <picture>
             <source media="(max-width: 760px)" srcset="/assets/cassette-signal-hero-768.webp" />
             <img src="/assets/cassette-signal-hero-1280.webp" width="1280" height="853" alt="An open cassette sends tape into four distinct tracks: stripes, dots, crosshatch, and bars." fetchpriority="high" decoding="async" />
           </picture>
-          <figcaption>One color channel in. Four readable signals out.</figcaption>
+          <figcaption>Patterns and labels make each status readable.</figcaption>
         </figure>
       </section>
 
@@ -47,8 +49,8 @@
         <div class="section-number" aria-hidden="true">SIDE B · LIVE TEST</div>
         <div class="demo-heading">
           <div>
-            <h2 id="demo-title">Meaning you can read, not infer</h2>
-            <p>Try the switch. The underlying dashboard stays intact.</p>
+            <h2 id="demo-title">See words and patterns on sample statuses</h2>
+          <p>Try the switch. The underlying dashboard stays intact.</p>
           </div>
           <label class="demo-switch">
             <span>Show labels</span>
@@ -69,20 +71,20 @@
       <section id="how" class="how" aria-labelledby="how-title">
         <div class="section-intro">
           <p class="kicker">Make your own legend</p>
-          <h2 id="how-title">Three clicks to a clearer dashboard</h2>
+          <h2 id="how-title">Label a status in three steps</h2>
         </div>
         <ol>
           <li><span class="step">01</span><div><h3>Open the picker</h3><p>Visit the dashboard or map, open the extension, and choose “Pick a status color.”</p></div></li>
           <li><span class="step">02</span><div><h3>Name the signal</h3><p>Click a recurring status, give it a plain-language label, and choose a distinct pattern.</p></div></li>
-          <li><span class="step">03</span><div><h3>Use the live legend</h3><p>Matching elements get pointer-safe badges. Your rules automatically return on that site.</p></div></li>
+          <li><span class="step">03</span><div><h3>Use the live legend</h3><p>Matching elements get click-through badges. Your rules return on that site.</p></div></li>
         </ol>
       </section>
 
       <section class="principles" aria-labelledby="principles-title">
-        <h2 id="principles-title">Built like a personal field tool</h2>
+        <h2 id="principles-title">Designed for daily status checks</h2>
         <div class="principle-grid">
-          <article><span aria-hidden="true">▧</span><h3>More than hue</h3><p>Every trained state gets text and a graphic pattern, so the legend stays useful in grayscale.</p></article>
-          <article><span aria-hidden="true">⌂</span><h3>Stays on your device</h3><p>No sign-in, server, analytics, or browsing-history collection. Export a JSON backup if you want one.</p></article>
+          <article><span aria-hidden="true">▧</span><h3>Use more than color</h3><p>Every trained status gets text and a graphic pattern, so the legend stays useful in grayscale.</p></article>
+          <article><span aria-hidden="true">⌂</span><h3>Keep rules on your device</h3><p>No account or analytics. Rules stay in local extension storage.</p></article>
           <article><span aria-hidden="true">↗</span><h3>Leaves controls alone</h3><p>Badges cannot receive clicks. Forms, links, and the data behind your page are never changed.</p></article>
         </div>
       </section>
@@ -97,17 +99,17 @@
       </section>
 
       <section class="final-cta" aria-labelledby="cta-title">
-        <p class="kicker">Your dashboard. Your labels.</p>
-        <h2 id="cta-title">Give every signal a name.</h2>
+        <p class="kicker">Install in your browser</p>
+        <h2 id="cta-title">Add readable labels to your statuses.</h2>
         <a class="button primary" href="/downloads/color-status-labeler-chrome.zip" download>Download the extension <span aria-hidden="true">↓</span></a>
-        <p>Free forever. Unzip, then load the folder in Chrome’s Extensions page.</p>
+        <p>Unzip the download, then load the folder in Chrome’s Extensions page.</p>
       </section>
     </main>
 
     <footer class="site-footer">
-      <div><strong>Color Status Labeler</strong><p>A free local-first utility by Sociobot.</p></div>
-      <nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
-      <p class="disclosure">Hero artwork was generated for this product with Azure AI Foundry. No third-party assets or tracking scripts.</p>
+      <div><strong>Color Status Labeler</strong><p>A local utility for readable color status.</p></div>
+      <nav aria-label="Legal"><a href="/demo/">Demo</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
+      <p class="disclosure">Built by Param Factory · Version 1.0.0 · Hero artwork was generated for this product with Azure AI Foundry. No third-party assets or tracking scripts.</p>
     </footer>
     <script type="module" src="/src/main.ts"></script>
   </body>

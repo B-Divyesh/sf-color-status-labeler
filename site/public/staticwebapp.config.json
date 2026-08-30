@@ -8,6 +8,9 @@
       "/icon.svg",
       "/robots.txt",
       "/sitemap.xml",
+      "/404",
+      "/404.html",
+      "/demo/*",
       "/privacy/*",
       "/terms/*"
     ]
@@ -18,6 +21,12 @@
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY"
+  },
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/404.html",
+      "statusCode": 404
+    }
   },
   "routes": [
     {

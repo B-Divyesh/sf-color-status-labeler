@@ -1,28 +1,55 @@
-# Color Status Labeler — review 1 handoff
+# Color Status Labeler — polish 1 handoff
 
-## Review status: FAIL
+## Status
 
-This work order was a read-only adversarial review. Product code, deployment, infrastructure, services, and secrets were not changed or accessed. The full report is [review-1.md](review-1.md).
+Repair commit `d76dc04` fixes every finding in [review-1.md](review-1.md).
+It has been pushed to `main`; final live deployment verification is pending the
+static deployment update.
 
-## What was done
+## What changed
 
-- Reviewed the live site cold at 390 px and desktop.
-- Entered the live sample demo, confirmed its `demo:` local-storage boundary, Reset behaviour, same-origin request log, no cookies, and offline reload.
-- Ran `npm ci`, `npm run build`, all 15 literal declared claim commands, `npm test` four times total (including three consecutive full runs), `npm run typecheck`, and `npm run lint`.
-- Crawled the live routes and links; checked metadata, 404, archive response, mobile overflow, console errors, and prior verification findings.
+- Added reliable destination-heading focus and polite route announcement for
+  internal navigation and Back, without disrupting cold-load skip-link order.
+- Rewrote the reviewed vague, decorative, technical, and overlong public copy.
+- Made the compact mobile action explicitly say **Download extension**.
+- Added real `grayscale-legibility` and public `site-runtime-privacy` claims,
+  each with a tagged observable browser test. The demo’s missing Bars pattern
+  now has an actual visual pattern.
+- Kept the isolated `/demo/` and `?demo=1` path, persistent banner, reset, and
+  start-for-real boundary intact.
+- Added the required catalog description and updated the copy audit.
 
-## Remaining work
+## Verification
 
-The blocking defect is route focus: moving between real pages or using Back leaves focus on `body`, not the destination `h1`. The review also records two overlong README sentences, six non-informative/mood headings, vague or technical wording, an unnamed mobile download action, and two unlisted claim areas. Repair the findings in `review-1.md`, then repeat the full checklist from a clean context.
-
-## How to reproduce
+From the fresh clone at `/tmp/color-status-labeler-clean.s4w09X`:
 
 ```sh
 npm ci
-npm run build
-npm test
-npm run typecheck
-npm run lint
+npm run check
 ```
 
-For the live check, visit `https://color-status-labeler.sociobot.in/`, follow **Try the demo**, and inspect `document.activeElement`; it is `BODY` instead of the demo `h1`.
+Both passed: 4 unit assertions, 19 Playwright tests, typecheck, lint, real
+extension package build, static site build, Axe route scans, offline reload,
+mobile/200% text checks, metadata/404 checks, and privacy request checks.
+Every one of the 17 literal `claims.json` test commands also passed separately
+in that clean clone. Local command logs and screenshots are committed under
+`.factory/polish-artifacts/`. See [polish-1.md](polish-1.md) for the one-to-one
+finding map and evidence.
+
+## Deploy and verify
+
+The deployable artifact remains `dist/site/`. After the static deployment
+updates, run:
+
+```sh
+npm run verify:deployment
+npm run verify:browser
+```
+
+Then visit `https://color-status-labeler.sociobot.in/` cold, use **Try the
+demo**, navigate Back, and verify the destination `h1` receives focus.
+
+## Known gaps
+
+No product gaps remain locally. This handoff will be amended with the live
+URL evidence once the pushed static deployment is observable.

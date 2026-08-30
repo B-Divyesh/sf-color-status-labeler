@@ -30,6 +30,10 @@
   },
   "routes": [
     {
+      "route": "/404",
+      "statusCode": 404
+    },
+    {
       "route": "/downloads/color-status-labeler-chrome.zip",
       "headers": {
         "Cache-Control": "public, max-age=31536000, immutable",

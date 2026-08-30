@@ -46,6 +46,7 @@ test('@claim:download-extension @claim:free-download demo links to the installab
   expect(config.globalHeaders['Permissions-Policy']).toContain('geolocation=()');
   expect(config.responseOverrides['404']).toEqual({ rewrite: '/404.html', statusCode: 404 });
   expect(config.routes).toEqual(expect.arrayContaining([
+    expect.objectContaining({ route: '/404', statusCode: 404 }),
     expect.objectContaining({ route: '/downloads/color-status-labeler-chrome.zip', headers: expect.objectContaining({ 'Content-Type': 'application/zip', 'Content-Disposition': 'attachment; filename="color-status-labeler-chrome.zip"', 'Cache-Control': 'public, max-age=31536000, immutable' }) }),
     expect.objectContaining({ route: '/assets/*', headers: { 'Cache-Control': 'public, max-age=31536000, immutable' } }),
     expect.objectContaining({ route: '/sw.js', headers: { 'Cache-Control': 'no-cache', 'Service-Worker-Allowed': '/' } })

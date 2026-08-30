@@ -103,9 +103,37 @@ function initDemo(root: HTMLElement) {
   render();
 }
 
+function focusRouteHeading() {
+  const heading = document.querySelector<HTMLElement>('main h1');
+  if (!heading || location.hash) return;
+
+  const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+  const arrivedFromThisSite = new URL(document.referrer || location.href).origin === location.origin && Boolean(document.referrer);
+  const isHistoryTraversal = navigation?.type === 'back_forward';
+  if (!arrivedFromThisSite && !isHistoryTraversal) return;
+
+  heading.focus({ preventScroll: true });
+  const announcement = document.querySelector<HTMLElement>('#route-announcement');
+  if (announcement) announcement.textContent = `${document.title}. ${heading.textContent?.trim() ?? ''}`;
+}
+
+function initializeRouteAnnouncement() {
+  const announcement = document.createElement('p');
+  announcement.id = 'route-announcement';
+  announcement.className = 'sr-only';
+  announcement.setAttribute('aria-live', 'polite');
+  announcement.setAttribute('aria-atomic', 'true');
+  document.body.prepend(announcement);
+
+  addEventListener('pageshow', () => {
+    requestAnimationFrame(focusRouteHeading);
+  });
+}
+
 if (location.pathname === '/' && new URLSearchParams(location.search).get('demo') === '1') {
   location.replace('/demo/');
 } else {
+  initializeRouteAnnouncement();
   const toggle = document.querySelector<HTMLInputElement>('#demo-toggle');
   const dashboard = document.querySelector<HTMLElement>('.dashboard');
 

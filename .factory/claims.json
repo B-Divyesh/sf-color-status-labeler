@@ -42,6 +42,13 @@
     "sandbox": "fresh /demo browser context; record requests, cookies, storage, and account-form controls"
   },
   {
+    "id": "site-runtime-privacy",
+    "claim": "The public site uses no third-party runtime assets or tracking scripts and sets no cookies.",
+    "where": "landing footer and README privacy paragraph",
+    "test": "npm test -- --grep @claim:site-runtime-privacy",
+    "sandbox": "fresh browser context; visit home, demo, privacy, terms, and 404 while recording every request origin and cookie"
+  },
+  {
     "id": "backup-transfer",
     "claim": "Export labels as a JSON backup and import a valid backup for the current site.",
     "where": "extension popup and privacy page",
@@ -75,6 +82,13 @@
     "where": "landing, demo, README, and extension package",
     "test": "npm test -- --grep @claim:core-labeling",
     "sandbox": "fresh Chromium extension profile on /demo; train the green sample status and observe its badge and legend"
+  },
+  {
+    "id": "grayscale-legibility",
+    "claim": "The sample legend keeps distinct words and patterns in grayscale.",
+    "where": "landing Use more than color section",
+    "test": "npm test -- --grep @claim:grayscale-legibility",
+    "sandbox": "fresh landing page; apply a grayscale rendering filter and assert each sample legend entry keeps its word and a distinct visible pattern"
   },
   {
     "id": "local-rules",

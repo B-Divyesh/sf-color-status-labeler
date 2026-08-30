@@ -16,6 +16,15 @@ function contrastRatio(first: string, second: string) {
 async function waitForControlledSiteWorker(page: Page) {
   await page.waitForFunction(async () => {
     const registration = await navigator.serviceWorker.ready;
+    return registration.active?.state === 'activated' && registration.active.scriptURL.endsWith('/sw.js');
+  });
+
+  // A newly installed worker cannot control the page that installed it. Reload
+  // once after activation so this claim always measures the controlled shell.
+  if (!(await page.evaluate(() => navigator.serviceWorker.controller))) await page.reload();
+
+  await page.waitForFunction(async () => {
+    const registration = await navigator.serviceWorker.ready;
     const activeWorker = registration.active;
     const controller = navigator.serviceWorker.controller;
 
@@ -274,6 +283,52 @@ test('@claim:no-account the demo has no account flow, cookies, or third-party re
   } finally {
     await context.close();
   }
+});
+
+test('@claim:site-runtime-privacy every public route uses only same-origin assets and sets no cookies', async ({ browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const requestOrigins = new Set<string>();
+  page.on('request', (request) => {
+    if (request.url().startsWith('http')) requestOrigins.add(new URL(request.url()).origin);
+  });
+  try {
+    for (const path of ['/', '/demo/', '/privacy/', '/terms/', '/404.html']) {
+      await page.goto(path, { waitUntil: 'networkidle' });
+      await expect(page.locator('main')).toBeVisible();
+    }
+    expect([...requestOrigins]).toEqual(['http://127.0.0.1:4173']);
+    expect(await context.cookies()).toEqual([]);
+  } finally {
+    await context.close();
+  }
+});
+
+test('@claim:grayscale-legibility the sample legend keeps distinct words and patterns in grayscale', async ({ page }) => {
+  await page.goto('/');
+  await page.addStyleTag({ content: 'html { filter: grayscale(1); }' });
+  const legend = page.locator('.demo-legend b');
+  await expect(legend).toHaveText(['Ready', 'Waiting', 'Blocked']);
+  const patterns = await legend.evaluateAll((elements) => elements.map((element) => ({
+    label: element.textContent?.trim(),
+    pattern: getComputedStyle(element, '::before').backgroundImage
+  })));
+  expect(patterns.map(({ label }) => label)).toEqual(['Ready', 'Waiting', 'Blocked']);
+  expect(new Set(patterns.map(({ pattern }) => pattern)).size).toBe(3);
+  expect(patterns.every(({ pattern }) => pattern !== 'none')).toBe(true);
+});
+
+test('route navigation and Back place focus on the destination heading and announce it', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('.site-header').getByRole('link', { name: 'Try the demo' }).click();
+  await expect(page).toHaveURL(/\/demo\/$/u);
+  await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
+  await expect(page.locator('#route-announcement')).toContainText('Demo');
+
+  await page.goBack();
+  await expect(page).toHaveURL(/\/$/u);
+  await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
+  await expect(page.locator('#route-announcement')).toContainText('Color Status Labeler');
 });
 
 test('reported focus indicators and mobile navigation targets meet their visual thresholds', async ({ page }) => {

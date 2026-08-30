@@ -29,12 +29,12 @@
     <a class="skip-link" href="#main">Skip to main content</a>
     <p id="offline-note" class="offline-note" role="status" hidden>You’re offline. This guide still works; the extension download may not.</p>
     <header class="site-header">
-      <a class="brand" href="/" aria-label="Color Status Labeler home"><span aria-hidden="true">A/01</span> Color Status Labeler</a>
+      <a class="brand" href="/" aria-label="Color Status Labeler home">Color Status Labeler</a>
       <nav aria-label="Primary navigation">
         <a href="/demo/">Try the demo</a>
         <a href="#how">How it works</a>
         <a href="#limits">Good to know</a>
-        <a class="mini-download" href="__CSL_EXTENSION_ARCHIVE_URL__" download="color-status-labeler-chrome.zip">Download</a>
+        <a class="mini-download" href="__CSL_EXTENSION_ARCHIVE_URL__" download="color-status-labeler-chrome.zip">Download extension</a>
       </nav>
     </header>
 
@@ -42,7 +42,7 @@
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
           <p class="eyebrow"><span>Browser extension</span><span>Local rules</span></p>
-          <h1 id="hero-title">Label color-only dashboard statuses.</h1>
+          <h1 id="hero-title" tabindex="-1">Label color-only dashboard statuses.</h1>
           <p class="lede">For people with color-vision deficiency who need dashboard and map statuses shown with readable words and patterns.</p>
           <div class="hero-actions">
             <a class="button primary" data-demo href="/demo/">Try it with sample data <span aria-hidden="true">→</span></a>
@@ -61,11 +61,11 @@
       </section>
 
       <section class="demo-section" aria-labelledby="demo-title">
-        <div class="section-number" aria-hidden="true">SIDE B · LIVE TEST</div>
+        <div class="section-number" aria-hidden="true">Sample dashboard preview</div>
         <div class="demo-heading">
           <div>
             <h2 id="demo-title">See words and patterns on sample statuses</h2>
-          <p>Try the switch. The underlying dashboard stays intact.</p>
+          <p>Turn labels on or off. The underlying dashboard stays intact.</p>
           </div>
           <label class="demo-switch">
             <span>Show labels</span>
@@ -79,36 +79,36 @@
             <article><span class="dot yellow"></span><strong>Line 07</strong><small>Inspection</small><span class="added-label dots">Waiting</span></article>
             <article><span class="dot red"></span><strong>Line 11</strong><small>Assembly</small><span class="added-label crosshatch">Blocked</span></article>
           </div>
-          <div class="demo-legend"><span>STATUS TAPE</span><b class="stripes">Ready</b><b class="dots">Waiting</b><b class="crosshatch">Blocked</b></div>
+          <div class="demo-legend"><span>Status legend</span><b class="stripes">Ready</b><b class="dots">Waiting</b><b class="crosshatch">Blocked</b></div>
         </div>
       </section>
 
       <section id="how" class="how" aria-labelledby="how-title">
         <div class="section-intro">
-          <p class="kicker">Make your own legend</p>
+          <p class="kicker">Set up a status label</p>
           <h2 id="how-title">Label a status in three steps</h2>
         </div>
         <ol>
           <li><span class="step">01</span><div><h3>Open the picker</h3><p>Visit the dashboard or map, open the extension, and choose “Pick a status color.”</p></div></li>
-          <li><span class="step">02</span><div><h3>Name the signal</h3><p>Click a recurring status, give it a plain-language label, and choose a distinct pattern.</p></div></li>
-          <li><span class="step">03</span><div><h3>Use the live legend</h3><p>Matching elements get click-through badges. Your rules return on that site.</p></div></li>
+          <li><span class="step">02</span><div><h3>Choose a label and pattern</h3><p>Click a recurring status, give it a plain-language label, and choose a distinct pattern.</p></div></li>
+          <li><span class="step">03</span><div><h3>Read labeled matching statuses</h3><p>Matching statuses get badges that do not block clicks. Your rules return on that site.</p></div></li>
         </ol>
       </section>
 
       <section class="principles" aria-labelledby="principles-title">
         <h2 id="principles-title">Designed for daily status checks</h2>
         <div class="principle-grid">
-          <article><span aria-hidden="true">▧</span><h3>Use more than color</h3><p>Every trained status gets text and a graphic pattern, so the legend stays useful in grayscale.</p></article>
+          <article><span aria-hidden="true">▧</span><h3>Use more than color</h3><p>Every trained status gets text and a distinct graphic pattern. The legend stays useful in grayscale.</p></article>
           <article><span aria-hidden="true">⌂</span><h3>Keep rules on your device</h3><p>No account or analytics. Rules stay in local extension storage.</p></article>
           <article><span aria-hidden="true">↗</span><h3>Leaves controls alone</h3><p>Badges cannot receive clicks. Forms, links, and the data behind your page are never changed.</p></article>
         </div>
       </section>
 
       <section id="limits" class="limits" aria-labelledby="limits-title">
-        <div class="warning-stamp" aria-hidden="true">CHECK THE TAPE</div>
+        <div class="warning-stamp" aria-hidden="true">COLOR-MATCHING LIMITS</div>
         <div>
-          <h2 id="limits-title">A helper, not a guarantee</h2>
-          <p>The extension matches rendered pixel colors. Themes, gradients, images, and site redesigns can cause missed or incorrect labels. Confirm critical status in the source system, and retrain a rule whenever a site changes.</p>
+          <h2 id="limits-title">Limits of color matching</h2>
+          <p>The extension matches colors it can see on the screen. Themes, gradients, images, and site redesigns can cause missed or incorrect labels. Confirm critical status in the source system, and retrain a rule whenever a site changes.</p>
           <p>It does not certify accessibility, inspect hidden business data, or modify server records.</p>
         </div>
       </section>
@@ -124,7 +124,7 @@
     <footer class="site-footer">
       <div><strong>Color Status Labeler</strong><p>A local utility for readable color status.</p></div>
       <nav aria-label="Legal"><a href="/demo/">Demo</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
-      <p class="disclosure">Built by Param Factory · Version 1.0.0 · Hero artwork was generated for this product with Azure AI Foundry. No third-party assets or tracking scripts.</p>
+      <p class="disclosure">Built by Param Factory · Version 1.0.0 · Hero artwork was generated for this product with Azure AI Foundry. No third-party runtime assets or tracking scripts.</p>
     </footer>
     <script type="module" src="/src/main.ts"></script>
   </body>

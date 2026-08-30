@@ -29,12 +29,12 @@
     <a class="skip-link" href="#main">Skip to demo</a>
     <p id="offline-note" class="offline-note" role="status" hidden>You’re offline. This sample remains available after its first visit.</p>
     <header class="site-header">
-      <a class="brand" href="/" aria-label="Color Status Labeler home"><span aria-hidden="true">A/01</span> Color Status Labeler</a>
+      <a class="brand" href="/" aria-label="Color Status Labeler home">Color Status Labeler</a>
       <nav aria-label="Primary navigation">
         <a href="/">Home</a>
         <a href="/demo/" aria-current="page">Demo</a>
         <a href="/privacy/">Privacy</a>
-        <a class="mini-download" href="__CSL_EXTENSION_ARCHIVE_URL__" download="color-status-labeler-chrome.zip">Download</a>
+        <a class="mini-download" href="__CSL_EXTENSION_ARCHIVE_URL__" download="color-status-labeler-chrome.zip">Download extension</a>
       </nav>
     </header>
 
@@ -46,7 +46,7 @@
 
       <section class="demo-intro" aria-labelledby="demo-title">
         <p class="kicker">Sample dispatch board</p>
-        <h1 id="demo-title">Read sample statuses without relying on color.</h1>
+        <h1 id="demo-title" tabindex="-1">Read sample statuses without relying on color.</h1>
         <p>Change a sample label or pattern below. The demo uses its own browser storage and never reads your extension rules.</p>
       </section>
 
@@ -59,12 +59,12 @@
             <article data-demo-status="waiting"><span class="dot yellow"></span><strong>Gate 07</strong><small>Inbound check</small><span class="added-label dots" data-demo-label>Waiting</span></article>
             <article data-demo-status="blocked"><span class="dot red"></span><strong>Lift bank</strong><small>Service queue</small><span class="added-label crosshatch" data-demo-label>Blocked</span></article>
           </div>
-          <div class="demo-legend" aria-label="Sample status legend"><span>STATUS TAPE</span><b class="stripes" data-demo-legend="ready">Ready</b><b class="dots" data-demo-legend="waiting">Waiting</b><b class="crosshatch" data-demo-legend="blocked">Blocked</b></div>
+          <div class="demo-legend" aria-label="Sample status legend"><span>Status legend</span><b class="stripes" data-demo-legend="ready">Ready</b><b class="dots" data-demo-legend="waiting">Waiting</b><b class="crosshatch" data-demo-legend="blocked">Blocked</b></div>
         </div>
       </section>
 
       <section class="demo-editor" aria-labelledby="editor-title">
-        <div><p class="kicker">Practice change</p><h2 id="editor-title">Change one sample label</h2><p>Use a word and a pattern together. Reset restores the original sample.</p></div>
+        <div><p class="kicker">Edit a sample status</p><h2 id="editor-title">Change one sample label</h2><p>Use a word and a pattern together. Reset restores the original sample.</p></div>
         <form data-demo-form>
           <label for="demo-status">Sample status</label>
           <select id="demo-status" name="status">

@@ -1,14 +1,14 @@
 # Color Status Labeler
 
-Color Status Labeler is a local browser extension for people with color-vision deficiency who need dashboards and maps to show readable status words and patterns. Teach it recurring status colors on a site and it adds a compact badge and legend.
+A local browser extension for people with color-vision deficiency. It adds words and patterns to dashboard and map statuses.
 
 The companion site is designed for `https://color-status-labeler.sociobot.in`.
 
 ## What it does
 
-- Samples a rendered background, border, or text color from a page.
+- Samples a page’s visible background, border, or text color.
 - Lets the user assign a plain-language label and one of four distinct patterns.
-- Finds matching elements on that site and adds click-through badges and a legend.
+- Finds matching statuses and adds badges that do not block clicks and a legend.
 - Restores saved rules when you return to the same site.
 - Stores per-site rules only in `chrome.storage.local`.
 
@@ -22,8 +22,8 @@ Color matching is approximate. Themes, gradients, animations, and site redesigns
 4. Turn on Developer mode, choose **Load unpacked**, and select the unzipped folder.
 5. Open a dashboard, select the extension, and choose **Pick a status color**.
 
-The extension does not collect accounts or analytics. Its public site makes no
-third-party runtime request.
+The extension does not collect accounts or analytics. Its public site uses no
+third-party runtime assets or tracking scripts.
 
 ## Try the isolated sample
 
@@ -57,7 +57,7 @@ npm run build        # extension ZIP + static site in dist/site/
 - `dist/site/`: deployable static site; `index.html` is at this exact root.
 - `dist/site/downloads/color-status-labeler-chrome-<digest>.zip`: packaged extension linked by the site. The digest changes with the package so returning users cannot receive an old release from cache.
 
-Deploy only `dist/site/`. Its included `staticwebapp.config.json` preserves the extension ZIP and service-worker routes, applies immutable caching only to content-addressed downloads and Vite's hashed code bundles, revalidates fixed artwork, and applies the site response policy. Infrastructure, DNS, and billing are outside this repository.
+Deploy only `dist/site/`. `staticwebapp.config.json` keeps the extension ZIP and service worker reachable. It caches versioned downloads and code for a year. It rechecks fixed artwork and HTML. Infrastructure, DNS, and billing are outside this repository.
 
 ## Architecture and privacy
 

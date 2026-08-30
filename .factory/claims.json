@@ -18,7 +18,7 @@
     "claim": "The demo links to an installable Chrome extension ZIP.",
     "where": "site header and demo page",
     "test": "npm test -- --grep @claim:download-extension",
-    "sandbox": "open /demo; request the linked artifact; assert ZIP signature, MIME policy, and static 404 response policy"
+    "sandbox": "build the archive; unzip and validate manifest.json; load the unpacked package in a fresh Chromium extension profile and inspect chrome.runtime.getManifest()"
   },
   {
     "id": "free-download",
@@ -33,6 +33,34 @@
     "where": "landing facts, privacy copy, and footer",
     "test": "npm test -- --grep @claim:no-account",
     "sandbox": "fresh /demo browser context; record requests, cookies, storage, and account-form controls"
+  },
+  {
+    "id": "backup-transfer",
+    "claim": "Export labels as a JSON backup and import a valid backup for the current site.",
+    "where": "extension popup and privacy page",
+    "test": "npm test -- --grep @claim:backup-transfer",
+    "sandbox": "fresh Chromium extension profile; seed two local rules, export and parse the downloaded JSON, reject malformed JSON, import one valid rule, and inspect the current-origin storage result"
+  },
+  {
+    "id": "rule-deletion",
+    "claim": "Delete one learned label or clear all labels for a site from the extension popup.",
+    "where": "extension popup and privacy page",
+    "test": "npm test -- --grep @claim:rule-deletion",
+    "sandbox": "fresh Chromium extension profile; use the real popup to confirm-delete, undo, confirm-clear, and inspect the saved empty rule list"
+  },
+  {
+    "id": "page-unchanged",
+    "claim": "Status labels do not read password values, submit forms, or change forms, links, and page data.",
+    "where": "landing feature explanation and privacy page",
+    "test": "npm test -- --grep @claim:page-unchanged",
+    "sandbox": "fresh Chromium extension profile on the sample page; train a rule and assert a normal field, password-value read trap, link href, and form submission count remain unchanged"
+  },
+  {
+    "id": "extension-runtime-privacy",
+    "claim": "The extension has no account system, analytics, advertising, telemetry, or remote APIs; it sends no page contents, uses no cookies, and loads no third-party runtime scripts or fonts.",
+    "where": "README and privacy page",
+    "test": "npm test -- --grep @claim:extension-runtime-privacy",
+    "sandbox": "fresh Chromium extension profile; record every HTTP request while opening the sample and popup, assert only the sample origin, no cookies, no account fields, local extension resources, and no cookie/identity/webRequest permissions"
   },
   {
     "id": "core-labeling",

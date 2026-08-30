@@ -98,6 +98,7 @@ if (existsSync(siteRoot)) {
     ['/terms/', 'terms/index.html'],
     ['/404.html', '404.html'],
     ['/icon.svg', 'icon.svg'],
+    ['/icon/apple-touch-icon.png', 'icon/apple-touch-icon.png'],
     ['/robots.txt', 'robots.txt'],
     ['/sitemap.xml', 'sitemap.xml'],
     ...readdirSync(resolve(siteRoot, 'assets')).map((name) => [`/assets/${name}`, `assets/${name}`])

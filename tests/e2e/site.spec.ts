@@ -30,7 +30,7 @@ test('@claim:color-vision-audience landing page names the intended user and demo
   expect(results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
 });
 
-test('@claim:download-extension @claim:free-download demo links to the installable extension ZIP without a payment step and declares its response policy', async ({ page }) => {
+test('@claim:free-download demo links to the extension ZIP without a payment step and declares its response policy', async ({ page }) => {
   await page.goto('/demo/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Read sample statuses');
   const response = await page.request.get('/downloads/color-status-labeler-chrome.zip');
@@ -54,6 +54,50 @@ test('@claim:download-extension @claim:free-download demo links to the installab
   expect(config.routes.some((route) => route.rewrite?.includes('color-status-labeler-chrome.bin'))).toBe(false);
   await page.goto('/404.html');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('This page is not here.');
+});
+
+test('every route has canonical, social, Twitter, theme, and Apple touch metadata with a 1200 by 630 product image', async ({ page }) => {
+  const routeMetadata = [
+    ['/', 'https://color-status-labeler.sociobot.in/'],
+    ['/demo/', 'https://color-status-labeler.sociobot.in/demo/'],
+    ['/privacy/', 'https://color-status-labeler.sociobot.in/privacy/'],
+    ['/terms/', 'https://color-status-labeler.sociobot.in/terms/'],
+    ['/404.html', 'https://color-status-labeler.sociobot.in/404.html']
+  ] as const;
+  const socialImage = 'https://color-status-labeler.sociobot.in/assets/color-status-labeler-social.jpg';
+  for (const [path, canonical] of routeMetadata) {
+    await page.goto(path);
+    const title = await page.title();
+    expect(await page.locator('meta[name="theme-color"]').getAttribute('content')).toBe('#F6F0DE');
+    expect(await page.locator('link[rel="canonical"]').getAttribute('href')).toBe(canonical);
+    expect(await page.locator('link[rel="apple-touch-icon"]').getAttribute('href')).toBe('/icon/apple-touch-icon.png');
+    expect(await page.locator('meta[property="og:type"]').getAttribute('content')).toBe('website');
+    expect(await page.locator('meta[property="og:site_name"]').getAttribute('content')).toBe('Color Status Labeler');
+    expect(await page.locator('meta[property="og:title"]').getAttribute('content')).toBe(title);
+    expect(await page.locator('meta[property="og:description"]').getAttribute('content')).not.toBeNull();
+    expect(await page.locator('meta[property="og:url"]').getAttribute('content')).toBe(canonical);
+    expect(await page.locator('meta[property="og:image"]').getAttribute('content')).toBe(socialImage);
+    expect(await page.locator('meta[property="og:image:width"]').getAttribute('content')).toBe('1200');
+    expect(await page.locator('meta[property="og:image:height"]').getAttribute('content')).toBe('630');
+    expect(await page.locator('meta[property="og:image:alt"]').getAttribute('content')).not.toBeNull();
+    expect(await page.locator('meta[name="twitter:card"]').getAttribute('content')).toBe('summary_large_image');
+    expect(await page.locator('meta[name="twitter:title"]').getAttribute('content')).toBe(title);
+    expect(await page.locator('meta[name="twitter:description"]').getAttribute('content')).not.toBeNull();
+    expect(await page.locator('meta[name="twitter:image"]').getAttribute('content')).toBe(socialImage);
+    expect(await page.locator('meta[name="twitter:image:alt"]').getAttribute('content')).not.toBeNull();
+  }
+  const imageResponse = await page.request.get('/assets/color-status-labeler-social.jpg');
+  expect(imageResponse.ok()).toBe(true);
+  expect(imageResponse.headers()['content-type']).toContain('image/jpeg');
+  expect(await page.evaluate(async () => {
+    const image = new Image();
+    image.src = '/assets/color-status-labeler-social.jpg';
+    await image.decode();
+    return { width: image.naturalWidth, height: image.naturalHeight };
+  })).toEqual({ width: 1200, height: 630 });
+  const appleTouchResponse = await page.request.get('/icon/apple-touch-icon.png');
+  expect(appleTouchResponse.ok()).toBe(true);
+  expect(appleTouchResponse.headers()['content-type']).toContain('image/png');
 });
 
 test('mobile layout does not overflow and legal pages are present', async ({ page }) => {

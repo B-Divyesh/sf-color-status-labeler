@@ -18,6 +18,7 @@ export default defineContentScript({
     let observed = false;
     let refreshTimer = 0;
     let positionFrame = 0;
+    let pickerReturnFocus: HTMLElement | null = null;
     const matches = new Map<Element, HTMLElement>();
 
     const css = `
@@ -184,11 +185,26 @@ export default defineContentScript({
       document.documentElement.style.removeProperty('cursor');
     }
 
+    function focusableControl(element: Element | null): HTMLElement | null {
+      const selector = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+      if (element instanceof HTMLElement && element.matches(selector)) return element;
+      return element?.closest<HTMLElement>(selector) ?? null;
+    }
+
+    function restorePageFocus(sampled: Element) {
+      const destination = focusableControl(sampled) ?? focusableControl(pickerReturnFocus);
+      if (destination?.isConnected) destination.focus({ preventScroll: true });
+      pickerReturnFocus = null;
+    }
+
     function beginPicker() {
       ensureRoot();
       removePickerUi();
       clearLabels();
       if (!shadow) return;
+      pickerReturnFocus = document.activeElement instanceof HTMLElement && document.activeElement !== document.body
+        ? document.activeElement
+        : null;
       document.documentElement.style.setProperty('cursor', 'crosshair', 'important');
       const bar = document.createElement('div');
       bar.className = 'picker-bar';
@@ -209,6 +225,8 @@ export default defineContentScript({
         document.removeEventListener('click', choose, true);
         document.removeEventListener('keydown', keydown, true);
         removePickerUi();
+        if (resume && pickerReturnFocus?.isConnected) pickerReturnFocus.focus({ preventScroll: true });
+        if (resume) pickerReturnFocus = null;
         if (resume) void renderLabels();
       };
       const move = (event: MouseEvent) => {
@@ -326,7 +344,14 @@ export default defineContentScript({
       dialog.append(form);
       backdrop.append(dialog);
       shadow.append(backdrop);
-      const close = () => { backdrop.remove(); void renderLabels(); };
+      let closed = false;
+      const close = () => {
+        if (closed) return;
+        closed = true;
+        backdrop.remove();
+        restorePageFocus(target);
+        void renderLabels();
+      };
       cancel.addEventListener('click', close);
       backdrop.addEventListener('click', (event) => { if (event.target === backdrop) close(); });
       backdrop.addEventListener('keydown', (event) => {

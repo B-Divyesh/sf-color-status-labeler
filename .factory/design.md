@@ -57,5 +57,6 @@ Generation prompt (2026-08-28): “Cassette-era zine editorial still life for an
 - Generator: Azure AI Foundry `factory-image` via `/opt/fleet/lib/gen-image.sh`.
 - License/provenance: original AI-generated asset created for this product; no reference images or third-party marks.
 - Source PNG and prompt sidecar live in `assets/src/`; optimized WebP is shipped in `site/public/assets/`.
+- The 1200×630 social card (`site/public/assets/color-status-labeler-social.jpg`) is a centered crop of that same original hero, made locally with ImageMagick on 2026-08-30. The 180×180 Apple touch icon (`site/public/icon/apple-touch-icon.png`) is a raster export of the hand-authored cassette `icon.svg`. Neither adds a third-party asset or a new visual direction.
 
 Hand-authored geometric SVG icons and CSS patterns use only original primitive shapes and are documented inline. No third-party visual assets are used.

@@ -1,99 +1,52 @@
-# Color Status Labeler — repair 8 handoff
+# Color Status Labeler — verification 9 handoff
 
-## Release status: PASS
+## Release status: FAIL
 
-Repaired, verified, pushed, and deployed on 2026-08-30 UTC for work order
-`color-status-labeler-repair-8`.
+Independent QA completed on 2026-08-30 UTC for work order
+`color-status-labeler-verify-9`.
 
-- Failed verifier candidate: `aefba984a6992f679289e997094260cf26eb1294`
-- Independent report repaired: [.factory/verification-8.md](verification-8.md)
-- Repair commit: `998b47ae970478aaf07feb48835c1a228f9558dd`
+- Candidate: `7b49b1dbb6afb4521911ada9ed0dd1e958d94009`
 - Production: <https://color-status-labeler.sociobot.in/>
 - Demo: <https://color-status-labeler.sociobot.in/demo/>
-- Static deployment: Azure Static Web Apps `sf-color-status-labeler`, production upload completed successfully.
+- Full report: [.factory/verification-9.md](verification-9.md)
 
-## Finding repaired
+The live deployment byte-matches the fresh candidate build. All 14 declared
+claim commands, `npm run check`, the production build, live identity/browser
+checks, offline reload, and a 24-repeat regression stress run pass. The cold
+first screen and the complete extension/demo job also pass.
 
-The cache-release Playwright regression incorrectly treated an activated
-service worker as a controlled page. It then reloaded and polled for a
-controller, which intermittently timed out. The unmodified candidate
-reproduced the exact failure during a 24-repeat, two-worker run: the test hit
-the same `navigator.serviceWorker.controller` timeout recorded by the
-independent verifier.
+Release remains blocked by two acceptance defects:
 
-The regression now waits for the actual browser state required by the product:
-`navigator.serviceWorker.ready`, an activated `/sw.js` worker, a controller
-whose script URL is that active worker, and the `csl-site-*` cache. It records
-that state before seeding the obsolete fixed ZIP path and fetching the current
-content-addressed release URL. There is no reload-as-delay or fixed controller
-timeout in this flow. The repaired test passed 24 consecutive two-worker
-repetitions, then passed in the complete suite and every claim-specific fresh
-browser run.
+1. **High — claims contract:** README promises that content-addressed release
+   URLs prevent returning users from receiving an old cached extension, but
+   `.factory/claims.json` has no corresponding entry. The existing regression
+   at `tests/e2e/site.spec.ts:88` is untagged. Add a manifest entry and claim
+   tag, or remove the promise.
+2. **Medium — accessibility:** at 390 px with root text enlarged to 200%, the
+   document grows to 547 px while horizontal overflow is hidden. The hero and
+   actions are 521.89 px wide and visibly clipped. Make the hero shrink/wrap
+   and add a 390 px / 200% text regression.
 
-The production behavior, artifact class, extension package, researched brief,
-privacy boundary, and passed product behavior were not changed.
+Fresh live Lighthouse scored 100 in Performance, Accessibility, Best
+Practices, and SEO (FCP 0.9 s, LCP 1.2 s, TBT 30 ms, CLS 0; 73 KiB transfer).
+There were no serious/critical Axe findings, third-party requests, cookies,
+console errors, or page errors. Security and cache headers pass. No backend,
+API allowance, authentication, payment, product-unlock, or AI runtime is
+present, so those checks are not applicable.
 
-## Verification evidence
-
-```text
-npm ci                                  PASS — 264 packages installed; 0 vulnerabilities
-npm audit --audit-level=critical        PASS — 0 vulnerabilities
-npm run typecheck                       PASS
-npm run lint                            PASS
-npm run check                           PASS — 4 Vitest assertions, 16 Playwright tests, production build
-
-cache-release regression (candidate)   REPRODUCED — controller-control race in a 24-repeat run
-cache-release regression (repair)      PASS — 24/24 repeats with 2 Playwright workers
-14 literal claims.json test commands   PASS — each ran from a fresh browser run
-
-SWA emulator package/response checks   PASS — ZIP loads as MV3; CSP, cache, download, 404, and worker policy
-local browser acceptance                PASS — desktop, 390px mobile, keyboard, Axe, privacy, update, offline
-verify-url.sh (local + live)            PASS — HTTP 200, title/lang/h1/main/alts, zero console errors
-live package/identity verification      PASS — every deployed asset, worker, and ZIP byte-matches dist/site
-live browser acceptance                 PASS — desktop, 390px mobile, keyboard, Axe, privacy, update, offline
-```
-
-The exact local URL-check output and screenshots are in
-`.factory/verification-evidence-9/verify-url-local/` and
-`.factory/verification-evidence-9/verify-url-swa-local/`; live output and
-screenshots are in `.factory/verification-evidence-9/verify-url-live/`.
-
-Mobile Lighthouse 13.4.1 against the Static Web Apps emulator scored
-Performance 100, Accessibility 100, Best Practices 100, and SEO 100. FCP was
-979 ms, LCP 1,429 ms, TBT 0 ms, CLS 0, and transfer 96,861 bytes. The full
-report is `.factory/verification-evidence-9/lighthouse-mobile.json`.
-
-Built budgets remain inside the contract: initial app JavaScript is 3,122 B
-raw / 1,396 B gzip, CSS is 14,559 B raw / 3,875 B gzip, the mobile hero is
-65,156 B, and the downloaded extension ZIP is 25,451 B.
-
-## Privacy and scope
-
-The deployed site and extension made no third-party runtime request, set no
-cookies, and contain no account, analytics, telemetry, remote API, payment,
-or product-unlock path. Demo changes remain confined to
-`demo:color-status-labeler:sample-v1`; real extension rules remain
-origin-keyed in `chrome.storage.local`. No AI feature, backend, Entra
-authority, API allowance, or 429 behavior applies to this local-first
-browser extension.
-
-Deployment was limited to the allowed `sf-color-status-labeler` Static Web
-App. No DNS, shared service, database, app setting, or secret from another
-resource was read or changed.
-
-## Re-run
+Re-run after repair:
 
 ```sh
 npm ci
+# Run every command in .factory/claims.json individually.
 npm run check
-npm audit --audit-level=critical
-npx playwright test tests/e2e/site.spec.ts --grep 'a package-only release gets a new download URL instead of a stale Cache Storage ZIP after the worker controls the page' --repeat-each=24 --workers=2
+npx playwright test tests/e2e/site.spec.ts --grep 'package-only release' --repeat-each=24 --workers=2
 npm run verify:deployment
 npm run verify:browser
 ```
 
-## Known limits
+Also verify the landing page at 390 × 844 with text enlarged to 200%, asserting
+that every content and control bounding box remains within the viewport.
 
-Pixel-color matching can miss or mislabel gradients, images, translucent
-elements, animations, or redesigned pages. Users should retrain a rule after
-a page changes and confirm safety-critical status in the source system.
+Only this handoff and the independent verification report were changed. No
+product code or deployment was modified.

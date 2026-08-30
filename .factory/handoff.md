@@ -1,50 +1,28 @@
-# Color Status Labeler — verification 10 handoff
+# Color Status Labeler — review 1 handoff
 
-## Release status: PASS
+## Review status: FAIL
 
-Independent QA on 2026-08-30 verified candidate
-`924900e39658132d003f11fd90e986c995ae7b50` at
-<https://color-status-labeler.sociobot.in/>. The live deployment byte-matches
-the candidate. No product defect was found at any severity.
+This work order was a read-only adversarial review. Product code, deployment, infrastructure, services, and secrets were not changed or accessed. The full report is [review-1.md](review-1.md).
 
-## What was verified
+## What was done
 
-- All 15 exact `.factory/claims.json` commands pass after clean `npm ci`.
-- `npm run check` passes: TypeScript, ESLint, 4 unit assertions, 16 Playwright
-  tests, the Manifest V3 package, and the exact production site build.
-- The cold first screen explains the job and audience and offers a one-click
-  **Try it with sample data** action. Demo state is isolated and resettable.
-- The public 25,451-byte ZIP matches the local build, passes archive checks,
-  and loads as Manifest V3 with only `storage` and `activeTab`.
-- A fresh 20-state fixture classified 20/20 statuses with words and patterns,
-  refreshed after a dynamic color change, preserved click-through behavior,
-  persisted on the same origin, and stayed isolated from a second origin.
-- Desktop, 390 px mobile, 200% text, keyboard, focus, reduced motion, offline
-  reload, service-worker update, all-route Axe scans, link crawl, request log,
-  cookies, console errors, response headers, caching, and bundle budgets pass.
-- Live Lighthouse 12.8.2 scored 100 for Performance, Accessibility, Best
-  Practices, and SEO; LCP 1.2 s, TBT 60 ms, CLS 0, 73 KiB transfer.
+- Reviewed the live site cold at 390 px and desktop.
+- Entered the live sample demo, confirmed its `demo:` local-storage boundary, Reset behaviour, same-origin request log, no cookies, and offline reload.
+- Ran `npm ci`, `npm run build`, all 15 literal declared claim commands, `npm test` four times total (including three consecutive full runs), `npm run typecheck`, and `npm run lint`.
+- Crawled the live routes and links; checked metadata, 404, archive response, mobile overflow, console errors, and prior verification findings.
 
-Full evidence and defects-by-severity are in
-[verification-10.md](verification-10.md). Claim logs, screenshots, and the raw
-Lighthouse report are under `.factory/verification-artifacts/`.
+## Remaining work
 
-## Reproduce
+The blocking defect is route focus: moving between real pages or using Back leaves focus on `body`, not the destination `h1`. The review also records two overlong README sentences, six non-informative/mood headings, vague or technical wording, an unnamed mobile download action, and two unlisted claim areas. Repair the findings in `review-1.md`, then repeat the full checklist from a clean context.
+
+## How to reproduce
 
 ```sh
 npm ci
-npm run check
-npm audit --audit-level=critical
-npm run verify:deployment
-npm run verify:browser
+npm run build
+npm test
+npm run typecheck
+npm run lint
 ```
 
-The deployable artifact is `dist/site/`. No deployment or product code was
-changed during this verification.
-
-## Known gaps and next step
-
-No known release gap remains. This is a static site and local extension with
-no backend, sign-in, payment, API, shared database, or remote product state.
-The normal next step is factory release promotion; no infrastructure action
-was taken from this repository.
+For the live check, visit `https://color-status-labeler.sociobot.in/`, follow **Try the demo**, and inspect `document.activeElement`; it is `BODY` instead of the demo `h1`.

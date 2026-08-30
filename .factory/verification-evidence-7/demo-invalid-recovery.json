@@ -1,0 +1,14 @@
+{
+  "corruptRecovery": "Ready",
+  "invalid": {
+    "message": "Enter a status label and choose a pattern.",
+    "ariaInvalid": "true",
+    "focused": true
+  },
+  "boundary": 32,
+  "recovery": "Recovered",
+  "keys": [
+    "demo:color-status-labeler:sample-v1"
+  ],
+  "errors": []
+}

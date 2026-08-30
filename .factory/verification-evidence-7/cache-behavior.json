@@ -1,0 +1,45 @@
+{
+  "worker": "https://color-status-labeler.sociobot.in/sw.js",
+  "before": [
+    {
+      "key": "csl-site-1c663a190f91",
+      "urls": [
+        "/",
+        "/demo/",
+        "/privacy/",
+        "/terms/",
+        "/404.html",
+        "/icon.svg",
+        "/robots.txt",
+        "/sitemap.xml",
+        "/assets/cassette-signal-hero-1280.webp",
+        "/assets/cassette-signal-hero-768.webp",
+        "/assets/color-status-labeler-social.jpg",
+        "/assets/main-CtfnnNGY.css",
+        "/assets/main-DQCsovJt.js",
+        "/downloads/color-status-labeler-chrome.zip"
+      ]
+    }
+  ],
+  "after": [
+    {
+      "key": "csl-site-1c663a190f91",
+      "urls": [
+        "/",
+        "/demo/",
+        "/privacy/",
+        "/terms/",
+        "/404.html",
+        "/icon.svg",
+        "/robots.txt",
+        "/sitemap.xml",
+        "/assets/cassette-signal-hero-1280.webp",
+        "/assets/cassette-signal-hero-768.webp",
+        "/assets/color-status-labeler-social.jpg",
+        "/assets/main-CtfnnNGY.css",
+        "/assets/main-DQCsovJt.js",
+        "/downloads/color-status-labeler-chrome.zip"
+      ]
+    }
+  ]
+}

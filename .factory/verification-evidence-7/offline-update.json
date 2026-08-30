@@ -1,0 +1,25 @@
+{
+  "before": {
+    "controller": "https://color-status-labeler.sociobot.in/sw.js",
+    "active": "activated",
+    "caches": [
+      "csl-site-1c663a190f91"
+    ]
+  },
+  "update": {
+    "active": "activated",
+    "script": "https://color-status-labeler.sociobot.in/sw.js"
+  },
+  "offline": {
+    "title": "Demo — Color Status Labeler",
+    "h1": "READ SAMPLE STATUSES WITHOUT RELYING ON COLOR.",
+    "noticeVisible": true,
+    "status": {
+      "online": false,
+      "caches": null
+    }
+  },
+  "requestOrigins": [
+    "https://color-status-labeler.sociobot.in"
+  ]
+}

@@ -1,0 +1,12 @@
+=== npm run verify:deployment ===
+
+> color-status-labeler@1.0.0 verify:deployment
+> node scripts/verify-live-deployment.mjs
+
+Verified live deployment: https://color-status-labeler.sociobot.in (25,451 byte extension ZIP)
+=== npm run verify:browser ===
+
+> color-status-labeler@1.0.0 verify:browser
+> node scripts/verify-live-browser.mjs
+
+Verified live desktop, 390px mobile, keyboard, accessibility, privacy, and offline shell: https://color-status-labeler.sociobot.in

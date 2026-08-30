@@ -1,0 +1,48 @@
+{
+  "scores": {
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100
+  },
+  "metricsMs": {
+    "FCP": 866.04,
+    "LCP": 1218.04,
+    "TBT": 31,
+    "CLS": 0,
+    "speedIndex": 866.04
+  },
+  "transferBytes": 74911,
+  "requests": [
+    {
+      "url": "https://color-status-labeler.sociobot.in/",
+      "transferSize": 3583,
+      "resourceSize": 8934,
+      "mimeType": "text/html"
+    },
+    {
+      "url": "https://color-status-labeler.sociobot.in/assets/main-DQCsovJt.js",
+      "transferSize": 1389,
+      "resourceSize": 3122,
+      "mimeType": "text/javascript"
+    },
+    {
+      "url": "https://color-status-labeler.sociobot.in/assets/main-CtfnnNGY.css",
+      "transferSize": 4108,
+      "resourceSize": 14559,
+      "mimeType": "text/css"
+    },
+    {
+      "url": "https://color-status-labeler.sociobot.in/assets/cassette-signal-hero-768.webp",
+      "transferSize": 65243,
+      "resourceSize": 65156,
+      "mimeType": "image/webp"
+    },
+    {
+      "url": "https://color-status-labeler.sociobot.in/icon.svg",
+      "transferSize": 588,
+      "resourceSize": 536,
+      "mimeType": "image/svg+xml"
+    }
+  ]
+}

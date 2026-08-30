@@ -1,0 +1,113 @@
+{
+  "archive": {
+    "bytes": 25451,
+    "sha256": "0225e2c5ce3d892b9bb9f6ea452dee591fbddb074f99a2b3d05b28f450040f80",
+    "candidateSha256": "0225e2c5ce3d892b9bb9f6ea452dee591fbddb074f99a2b3d05b28f450040f80",
+    "manifest": {
+      "name": "Color Status Labeler",
+      "version": "1.0.0",
+      "manifest_version": 3,
+      "permissions": [
+        "storage",
+        "activeTab"
+      ]
+    }
+  },
+  "normalAndBoundary": {
+    "initialDialogFocus": true,
+    "invalidMessage": "Enter a status label; spaces alone cannot name a signal.",
+    "invalidFocused": true,
+    "boundaryLength": 32,
+    "targetBox": {
+      "x": 201,
+      "y": 956.984375,
+      "width": 28,
+      "height": 28
+    },
+    "reticleEvidence": {
+      "box": {
+        "x": 201,
+        "y": 345.984375,
+        "width": 28,
+        "height": 28
+      },
+      "style": "left: 201px; top: 345.984px; width: 28px; height: 28px;"
+    },
+    "badgeCount": 1,
+    "badgeBox": {
+      "x": 49,
+      "y": 343.0142822265625,
+      "width": 180,
+      "height": 28
+    },
+    "badgeStyle": "left: 49px; top: 345.984px;",
+    "badgeSwatch": {
+      "style": "--sample: #4A985C;",
+      "sample": "#4A985C",
+      "backgroundColor": "rgb(74, 152, 92)",
+      "backgroundImage": "repeating-linear-gradient(90deg, rgba(0, 0, 0, 0) 0px, rgba(0, 0, 0, 0) 3px, rgb(23, 21, 18) 3px, rgb(23, 21, 18) 5px)"
+    },
+    "legendText": "STATUS TAPE\nA / LIVE\n12345678901234567890123456789012\n1×",
+    "persistedLegend": "STATUS TAPE\nA / LIVE\n12345678901234567890123456789012\n1×",
+    "dynamicBadgesBefore": 1,
+    "dynamicBadgesAfter": 2,
+    "storedRule": {
+      "color": "#4A985C",
+      "createdAt": 1788062748794,
+      "enabled": true,
+      "id": "fbd19db0-e372-4e10-aeb1-b561cb7b18e4",
+      "label": "12345678901234567890123456789012",
+      "pattern": "bars",
+      "property": "backgroundColor",
+      "tolerance": 10
+    }
+  },
+  "accessibility": {
+    "dialogAxe": [],
+    "popupAxe": [],
+    "focusRestored": true,
+    "reducedMotion": {
+      "animationDuration": "0s",
+      "transitionDuration": "0s"
+    },
+    "mobile": {
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    "legendBox": {
+      "x": 120,
+      "y": 760.8125,
+      "width": 260,
+      "height": 73.1875
+    }
+  },
+  "popup": {
+    "pauseStatus": "Labels are paused for this site.",
+    "paused": false,
+    "resumed": true
+  },
+  "isolation": {
+    "otherOriginBadges": 0,
+    "storageKeys": [
+      "color-status-labeler:https://color-status-labeler.sociobot.in"
+    ],
+    "cookies": [],
+    "requestOrigins": [
+      "https://color-status-labeler.sociobot.in",
+      "http://127.0.0.1:4173"
+    ]
+  },
+  "errors": [],
+  "toolingErrors": [
+    "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-nP7w6S+2kXNSmHgpmhRPqE9Ngv1WFLTedLZDOrh9bwM='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+  ],
+  "errorCheckpoints": {
+    "afterLoad": [],
+    "afterPickerHover": [],
+    "afterAxe": [
+      "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-nP7w6S+2kXNSmHgpmhRPqE9Ngv1WFLTedLZDOrh9bwM='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+    ],
+    "afterSave": []
+  },
+  "failures": []
+}

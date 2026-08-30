@@ -1,0 +1,465 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "status": 200,
+      "title": "Color Status Labeler — label color-only statuses",
+      "titleLength": 48,
+      "lang": "en",
+      "h1s": 1,
+      "mains": 1,
+      "description": "Add words and patterns to color-only dashboard and map statuses. A local Chrome extension for people with color-vision deficiency.",
+      "canonical": "https://color-status-labeler.sociobot.in/",
+      "missingAlt": 0,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Label color-only dashboard statuses."
+        },
+        {
+          "level": 2,
+          "text": "See words and patterns on sample statuses"
+        },
+        {
+          "level": 2,
+          "text": "Label a status in three steps"
+        },
+        {
+          "level": 3,
+          "text": "Open the picker"
+        },
+        {
+          "level": 3,
+          "text": "Name the signal"
+        },
+        {
+          "level": 3,
+          "text": "Use the live legend"
+        },
+        {
+          "level": 2,
+          "text": "Designed for daily status checks"
+        },
+        {
+          "level": 3,
+          "text": "Use more than color"
+        },
+        {
+          "level": 3,
+          "text": "Keep rules on your device"
+        },
+        {
+          "level": 3,
+          "text": "Leaves controls alone"
+        },
+        {
+          "level": 2,
+          "text": "A helper, not a guarantee"
+        },
+        {
+          "level": 2,
+          "text": "Add readable labels to your statuses."
+        }
+      ],
+      "hrefs": [
+        "https://color-status-labeler.sociobot.in/#main",
+        "https://color-status-labeler.sociobot.in/",
+        "https://color-status-labeler.sociobot.in/demo/",
+        "https://color-status-labeler.sociobot.in/#how",
+        "https://color-status-labeler.sociobot.in/#limits",
+        "https://color-status-labeler.sociobot.in/downloads/color-status-labeler-chrome.zip",
+        "https://color-status-labeler.sociobot.in/demo/",
+        "https://color-status-labeler.sociobot.in/downloads/color-status-labeler-chrome.zip",
+        "https://color-status-labeler.sociobot.in/downloads/color-status-labeler-chrome.zip",
+        "https://color-status-labeler.sociobot.in/demo/",
+        "https://color-status-labeler.sociobot.in/privacy/",
+        "https://color-status-labeler.sociobot.in/terms/"
+      ],
+      "axeSeriousCritical": []
+    },
+    {
+      "path": "/demo/",
+      "status": 200,
+      "title": "Demo — Color Status Labeler",
+      "titleLength": 27,
+      "lang": "en",
+      "h1s": 1,
+      "mains": 1,
+      "description": "Try Color Status Labeler with sample dispatch statuses. The sample never changes your real extension rules.",
+      "canonical": "https://color-status-labeler.sociobot.in/demo/",
+      "missingAlt": 0,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Read sample statuses without relying on color."
+        },
+        {
+          "level": 2,
+          "text": "North hub dispatch"
+        },
+        {
+          "level": 2,
+          "text": "Change one sample label"
+        }
+      ],
+      "hrefs": [
+        "https://color-status-labeler.sociobot.in/demo/#main",
+        "https://color-status-labeler.sociobot.in/",
+        "https://color-status-labeler.sociobot.in/",
+        "https://color-status-labeler.sociobot.in/demo/",
+        "https://color-status-labeler.sociobot.in/privacy/",
+        "https://color-status-labeler.sociobot.in/downloads/color-status-labeler-chrome.zip",
+        "https://color-status-labeler.sociobot.in/",
+        "https://color-status-labeler.sociobot.in/demo/",
+        "https://color-status-labeler.sociobot.in/privacy/",
+        "https://color-status-labeler.sociobot.in/terms/"
+      ],
+      "axeSeriousCritical": []
+    },
+    {
+      "path": "/privacy/",
+      "status": 200,
+      "title": "Privacy — Color Status Labeler",
+      "titleLength": 30,
+      "lang": "en",
+      "h1s": 1,
+      "mains": 1,
+      "description": "Privacy policy for Color Status Labeler.",
+      "canonical": "https://color-status-labeler.sociobot.in/privacy/",
+      "missingAlt": 0,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Privacy"
+        },
+        {
+          "level": 2,
+          "text": "What stays in your browser"
+        },
+        {
+          "level": 2,
+          "text": "What we collect"
+        },
+        {
+          "level": 2,
+          "text": "Page access"
+        },
+        {
+          "level": 2,
+          "text": "Your control"
+        },
+        {
+          "level": 2,
+          "text": "Contact"
+        }
+      ],
+      "hrefs": [
+        "https://color-status-labeler.sociobot.in/privacy/#main",
+        "https://color-status-labeler.sociobot.in/",
+        "https://color-status-labeler.sociobot.in/",
+        "https://color-status-labeler.sociobot.in/demo/",
+        "https://color-status-labeler.sociobot.in/privacy/",
+        "https://color-status-labeler.sociobot.in/downloads/color-status-labeler-chrome.zip",
+        "mailto:privacy@sociobot.in",
+        "https://color-status-labeler.sociobot.in/demo/",
+        "https://color-status-labeler.sociobot.in/privacy/",
+        "https://color-status-labeler.sociobot.in/terms/"
+      ],
+      "axeSeriousCritical": []
+    },
+    {
+      "path": "/terms/",
+      "status": 200,
+      "title": "Terms — Color Status Labeler",
+      "titleLength": 28,
+      "lang": "en",
+      "h1s": 1,
+      "mains": 1,
+      "description": "Terms of use for Color Status Labeler.",
+      "canonical": "https://color-status-labeler.sociobot.in/terms/",
+      "missingAlt": 0,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Terms"
+        },
+        {
+          "level": 2,
+          "text": "What the tool does"
+        },
+        {
+          "level": 2,
+          "text": "Not a source of truth"
+        },
+        {
+          "level": 2,
+          "text": "Acceptable use"
+        },
+        {
+          "level": 2,
+          "text": "No warranty"
+        },
+        {
+          "level": 2,
+          "text": "Contact"
+        }
+      ],
+      "hrefs": [
+        "https://color-status-labeler.sociobot.in/terms/#main",
+        "https://color-status-labeler.sociobot.in/",
+        "https://color-status-labeler.sociobot.in/",
+        "https://color-status-labeler.sociobot.in/demo/",
+        "https://color-status-labeler.sociobot.in/privacy/",
+        "https://color-status-labeler.sociobot.in/downloads/color-status-labeler-chrome.zip",
+        "mailto:hello@sociobot.in",
+        "https://color-status-labeler.sociobot.in/demo/",
+        "https://color-status-labeler.sociobot.in/privacy/",
+        "https://color-status-labeler.sociobot.in/terms/"
+      ],
+      "axeSeriousCritical": []
+    },
+    {
+      "path": "/404.html",
+      "status": 200,
+      "title": "Page not found — Color Status Labeler",
+      "titleLength": 37,
+      "lang": "en",
+      "h1s": 1,
+      "mains": 1,
+      "description": "The requested Color Status Labeler page was not found.",
+      "canonical": "https://color-status-labeler.sociobot.in/404.html",
+      "missingAlt": 0,
+      "headings": [
+        {
+          "level": 1,
+          "text": "This page is not here."
+        }
+      ],
+      "hrefs": [
+        "https://color-status-labeler.sociobot.in/404.html#main",
+        "https://color-status-labeler.sociobot.in/",
+        "https://color-status-labeler.sociobot.in/demo/",
+        "https://color-status-labeler.sociobot.in/privacy/",
+        "https://color-status-labeler.sociobot.in/downloads/color-status-labeler-chrome.zip",
+        "https://color-status-labeler.sociobot.in/",
+        "https://color-status-labeler.sociobot.in/demo/",
+        "https://color-status-labeler.sociobot.in/privacy/",
+        "https://color-status-labeler.sociobot.in/terms/"
+      ],
+      "axeSeriousCritical": []
+    }
+  ],
+  "linkResults": [
+    {
+      "href": "https://color-status-labeler.sociobot.in/#main",
+      "status": 200
+    },
+    {
+      "href": "https://color-status-labeler.sociobot.in/",
+      "status": 200
+    },
+    {
+      "href": "https://color-status-labeler.sociobot.in/demo/",
+      "status": 200
+    },
+    {
+      "href": "https://color-status-labeler.sociobot.in/#how",
+      "status": 200
+    },
+    {
+      "href": "https://color-status-labeler.sociobot.in/#limits",
+      "status": 200
+    },
+    {
+      "href": "https://color-status-labeler.sociobot.in/downloads/color-status-labeler-chrome.zip",
+      "status": 200
+    },
+    {
+      "href": "https://color-status-labeler.sociobot.in/privacy/",
+      "status": 200
+    },
+    {
+      "href": "https://color-status-labeler.sociobot.in/terms/",
+      "status": 200
+    },
+    {
+      "href": "https://color-status-labeler.sociobot.in/demo/#main",
+      "status": 200
+    },
+    {
+      "href": "https://color-status-labeler.sociobot.in/privacy/#main",
+      "status": 200
+    },
+    {
+      "href": "mailto:privacy@sociobot.in",
+      "external": true
+    },
+    {
+      "href": "https://color-status-labeler.sociobot.in/terms/#main",
+      "status": 200
+    },
+    {
+      "href": "mailto:hello@sociobot.in",
+      "external": true
+    },
+    {
+      "href": "https://color-status-labeler.sociobot.in/404.html#main",
+      "status": 200
+    }
+  ],
+  "errs": [],
+  "requestOrigins": [
+    "https://color-status-labeler.sociobot.in"
+  ],
+  "requestCount": 27,
+  "firstFocus": {
+    "text": "Skip to main content",
+    "href": "#main"
+  },
+  "focus": [
+    {
+      "tag": "A",
+      "text": "Skip to main content",
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(20, 91, 115)",
+      "w": 220.03125,
+      "h": 44.796875
+    },
+    {
+      "tag": "A",
+      "text": "A/01\nCOLOR STATUS LABELER",
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(20, 91, 115)",
+      "w": 235.609375,
+      "h": 44
+    },
+    {
+      "tag": "A",
+      "text": "Try the demo",
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(20, 91, 115)",
+      "w": 115.21875,
+      "h": 44
+    },
+    {
+      "tag": "A",
+      "text": "How it works",
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(20, 91, 115)",
+      "w": 115.21875,
+      "h": 44
+    },
+    {
+      "tag": "A",
+      "text": "Good to know",
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(20, 91, 115)",
+      "w": 115.21875,
+      "h": 44
+    },
+    {
+      "tag": "A",
+      "text": "Download",
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(20, 91, 115)",
+      "w": 108.8125,
+      "h": 44
+    },
+    {
+      "tag": "A",
+      "text": "Try it with sample data\n→",
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(20, 91, 115)",
+      "w": 282.453125,
+      "h": 52.796875
+    },
+    {
+      "tag": "A",
+      "text": "Download for Chrome\n↓",
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(20, 91, 115)",
+      "w": 244.046875,
+      "h": 52.796875
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(242, 201, 76)",
+      "w": 58,
+      "h": 34
+    },
+    {
+      "tag": "A",
+      "text": "Download the extension\n↓",
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(242, 201, 76)",
+      "w": 272.84375,
+      "h": 52.796875
+    },
+    {
+      "tag": "A",
+      "text": "Demo",
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(20, 91, 115)",
+      "w": 44,
+      "h": 44
+    },
+    {
+      "tag": "A",
+      "text": "Privacy",
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(20, 91, 115)",
+      "w": 67.21875,
+      "h": 44
+    },
+    {
+      "tag": "A",
+      "text": "Terms",
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(20, 91, 115)",
+      "w": 48.015625,
+      "h": 44
+    },
+    {
+      "tag": "BODY",
+      "text": "Skip to main content\nA/01\nCOLOR STATUS LABELER\nTry the demo\nHow it works\nGood to",
+      "outlineStyle": "none",
+      "outlineWidth": "0px",
+      "outlineColor": "rgb(23, 21, 18)",
+      "w": 1440,
+      "h": 4327.46875
+    }
+  ],
+  "mobileInitial": {
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "scrollHeight": 2909,
+    "clientHeight": 844
+  },
+  "motion": [],
+  "demoStorage": {
+    "local": {
+      "demo:color-status-labeler:sample-v1": "{\"ready\":{\"label\":\"Ready\",\"pattern\":\"stripes\"},\"waiting\":{\"label\":\"Queued\",\"pattern\":\"bars\"},\"blocked\":{\"label\":\"Blocked\",\"pattern\":\"crosshatch\"}}"
+    },
+    "session": {}
+  },
+  "afterLeave": {
+    "local": {},
+    "session": {}
+  },
+  "cookies": []
+}

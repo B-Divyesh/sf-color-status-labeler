@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 function contrastRatio(first: string, second: string) {
@@ -11,6 +11,31 @@ function contrastRatio(first: string, second: string) {
   };
   const [lighter, darker] = [luminance(first), luminance(second)].sort((a, b) => b - a);
   return (lighter + 0.05) / (darker + 0.05);
+}
+
+async function waitForControlledSiteWorker(page: Page) {
+  await page.waitForFunction(async () => {
+    const registration = await navigator.serviceWorker.ready;
+    const activeWorker = registration.active;
+    const controller = navigator.serviceWorker.controller;
+
+    if (
+      activeWorker?.state !== 'activated' ||
+      !activeWorker.scriptURL.endsWith('/sw.js') ||
+      controller?.scriptURL !== activeWorker.scriptURL
+    ) return false;
+
+    return (await caches.keys()).some((cacheName) => cacheName.startsWith('csl-site-'));
+  });
+
+  return page.evaluate(async () => {
+    const registration = await navigator.serviceWorker.ready;
+    return {
+      active: registration.active?.scriptURL,
+      controller: navigator.serviceWorker.controller?.scriptURL,
+      cacheNames: await caches.keys()
+    };
+  });
 }
 
 test('@claim:color-vision-audience landing page names the intended user and demo action', async ({ page }) => {
@@ -60,14 +85,14 @@ test('@claim:free-download demo links to the extension ZIP without a payment ste
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('This page is not here.');
 });
 
-test('a package-only release gets a new download URL instead of a stale Cache Storage ZIP', async ({ page }) => {
+test('a package-only release gets a new download URL instead of a stale Cache Storage ZIP after the worker controls the page', async ({ page }) => {
   await page.goto('/');
   const currentArchive = await page.locator('a[download]').first().getAttribute('href');
   expect(currentArchive).toMatch(/^\/downloads\/color-status-labeler-chrome-[a-f0-9]{16}\.zip$/u);
 
-  await page.waitForFunction(async () => (await navigator.serviceWorker.getRegistration())?.active?.state === 'activated');
-  await page.reload();
-  await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+  const workerState = await waitForControlledSiteWorker(page);
+  expect(workerState.active).toBe(workerState.controller);
+  expect(workerState.cacheNames).toEqual(expect.arrayContaining([expect.stringMatching(/^csl-site-/u)]));
 
   const freshArchive = await page.evaluate(async (archivePath) => {
     const previousArchive = '/downloads/color-status-labeler-chrome.zip';

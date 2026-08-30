@@ -36,6 +36,9 @@ recheck is recorded below after the static deployment picks up this commit.
   privacy, terms, and 404. The suite covers offline reload, request privacy,
   390 px layout, 200% text, keyboard controls, route metadata, and the real
   MV3 extension flow.
+- `node scripts/verify-live-browser.mjs http://127.0.0.1:4173/` passed against
+  the local production build. The verifier now explicitly checks focus and the
+  polite announcement after the demo navigation and Back.
 
 ## Live recheck
 

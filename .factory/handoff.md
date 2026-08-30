@@ -36,6 +36,10 @@ in that clean clone. Local command logs and screenshots are committed under
 `.factory/polish-artifacts/`. See [polish-1.md](polish-1.md) for the one-to-one
 finding map and evidence.
 
+`node scripts/verify-live-browser.mjs http://127.0.0.1:4173/` also passed
+against the local production build, including the new route-focus and Back
+checks.
+
 ## Deploy and verify
 
 The deployable artifact remains `dist/site/`. After the static deployment

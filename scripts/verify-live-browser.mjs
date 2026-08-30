@@ -68,9 +68,15 @@ try {
   check(webStorage.local === 0 && webStorage.session === 0, 'the site wrote unexpected web storage data.');
   await page.getByRole('link', { name: /Try it with sample data/ }).click();
   check(new URL(page.url()).pathname === '/demo/', 'the sample-data action did not open the isolated demo.');
+  check(await page.getByRole('heading', { level: 1 }).evaluate((element) => element === document.activeElement), 'route navigation did not focus the demo heading.');
+  check((await page.locator('#route-announcement').textContent())?.includes('Demo'), 'route navigation did not announce the demo page.');
   check(await page.getByText('Demo — sample data, nothing is saved', { exact: false }).count() === 1, 'demo banner is missing.');
   check(await page.getByRole('button', { name: 'Reset demo' }).count() === 1, 'demo Reset control is missing.');
   check(await page.getByRole('link', { name: 'Start for real' }).count() === 1, 'demo Start for real control is missing.');
+  await page.goBack({ waitUntil: 'networkidle' });
+  check(new URL(page.url()).pathname === '/', 'Back did not return to the landing page.');
+  check(await page.getByRole('heading', { level: 1 }).evaluate((element) => element === document.activeElement), 'Back navigation did not focus the landing heading.');
+  check((await page.locator('#route-announcement').textContent())?.includes('Color Status Labeler'), 'Back navigation did not announce the landing page.');
   await context.close();
 
   const mobile = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true });

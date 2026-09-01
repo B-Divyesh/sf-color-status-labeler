@@ -1,0 +1,108 @@
+{
+  "base": "https://color-status-labeler.sociobot.in",
+  "checkedAt": "2026-09-01T19:58:39.523Z",
+  "viewports": {
+    "1365x768": {
+      "action": {
+        "x": 54.5,
+        "y": 497.90625,
+        "width": 282.453125,
+        "height": 52.796875
+      },
+      "note": {
+        "x": 54.5,
+        "y": 562.703125,
+        "width": 352.84375,
+        "height": 43.375
+      },
+      "actionInView": true,
+      "noteInView": true,
+      "overflow": false
+    },
+    "1280x720": {
+      "action": {
+        "x": 32,
+        "y": 468.171875,
+        "width": 282.453125,
+        "height": 52.796875
+      },
+      "note": {
+        "x": 32,
+        "y": 532.96875,
+        "width": 352.84375,
+        "height": 43.375
+      },
+      "actionInView": true,
+      "noteInView": true,
+      "overflow": false
+    },
+    "390x844": {
+      "action": {
+        "x": 20,
+        "y": 505.375,
+        "width": 350,
+        "height": 52.796875
+      },
+      "note": {
+        "x": 20,
+        "y": 642.96875,
+        "width": 350,
+        "height": 43.375
+      },
+      "actionInView": true,
+      "noteInView": true,
+      "overflow": false
+    }
+  },
+  "routes": {
+    "/": {
+      "status": 200,
+      "title": "Color Status Labeler — label color-only statuses",
+      "h1": 1,
+      "main": 1,
+      "privacyLinks": 1,
+      "termsLinks": 1
+    },
+    "/demo/": {
+      "status": 200,
+      "title": "Demo — Color Status Labeler",
+      "h1": 1,
+      "main": 1,
+      "privacyLinks": 2,
+      "termsLinks": 1
+    },
+    "/privacy/": {
+      "status": 200,
+      "title": "Privacy — Color Status Labeler",
+      "h1": 1,
+      "main": 1,
+      "privacyLinks": 2,
+      "termsLinks": 1
+    },
+    "/terms/": {
+      "status": 200,
+      "title": "Terms — Color Status Labeler",
+      "h1": 1,
+      "main": 1,
+      "privacyLinks": 2,
+      "termsLinks": 1
+    },
+    "unknown": {
+      "status": 404,
+      "title": "Page not found — Color Status Labeler"
+    }
+  },
+  "demo": {
+    "redirectPath": "/demo/",
+    "banner": true,
+    "storageAfterEdit": [
+      "demo:color-status-labeler:sample-v1"
+    ],
+    "storageAfterReset": []
+  },
+  "requests": [
+    "https://color-status-labeler.sociobot.in"
+  ],
+  "cookies": [],
+  "consoleErrors": []
+}

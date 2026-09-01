@@ -1,29 +1,50 @@
-# Color Status Labeler — review 3 handoff
+# Color Status Labeler — polish 3 handoff
 
-## Status: FAIL
+## Status: PASS
 
-Review 3 is complete for source commit `46d0395adb0fb703719285eb16d72f1c94e497ae` and the live product at <https://color-status-labeler.sociobot.in/>. No product code was changed.
+Repair commit: `05e1c5a90bce99b7a1729c0b57025f8e85e1941e`. It is pushed to `main`
+and deployed to <https://color-status-labeler.sociobot.in/>.
 
-Confirm and check that the live first screen passes at 390 × 844, 1280 × 720, and 1365 × 768. The one-click demo, isolated `demo:` storage, Reset, Start for real, same-origin request behavior, offline reload, metadata, route focus, designed 404, link crawl, and visual identity also pass.
+The color-matching claim now waits for the real content receiver before every
+picker start. The review’s six plain-language fixes are live, the README no
+longer promises untested Shadow DOM isolation, and the footer describes the
+concrete job. `claims.json` now contains 22 public claims, each backed by one
+tagged test; release/artwork disclosure is covered too. The catalog line is a
+verb-first, 69-character description.
 
-Confirm and check that a clean clone completed `npm ci`, `npm run build`, `npm run typecheck`, and `npm run lint`. A complete `npm test` passed 4 unit checks and 25 Playwright checks. Twenty of 21 literal claim commands passed on their required run. `@claim:color-matching-limits` failed once because the test sent `START_PICKER` before the content receiver was available; an immediate retry passed. The work order treats the initial claim-command failure as blocking.
+## Exact evidence
 
-The report reopens F-2-3 and records one major unlisted-claim/copy finding plus five minor copy findings. Full details, every landing/README sentence count, all earlier-finding confirmations, and evidence paths are in `.factory/review-3.md`. Screenshots and the factory URL-check output are in `.factory/review-3-artifacts/`.
+- Fresh clone `/tmp/color-status-labeler-polish3.KaCxYz/repo`: `npm ci`,
+  `npm run typecheck`, `npm run lint`, and `npm run build` passed.
+- Every literal `claims.json` command passed in that clone (22 of 22). A final
+  `npm test` passed 4 unit assertions and 26 Playwright tests.
+- `@claim:color-matching-limits` passed five additional consecutive
+  fresh-profile runs before the clean-clone pass.
+- Production checks pass: `npm run verify:deployment`, `npm run
+  verify:browser`, and `/opt/fleet/lib/verify-url.sh
+  https://color-status-labeler.sociobot.in .factory/polish-3-artifacts`.
+- The full suite includes Playwright Axe checks for home, demo, privacy, terms,
+  and 404; each has no serious or critical finding. (The standalone Axe CLI is
+  unavailable in this worker because ChromeDriver is not installed.)
+- Live Lighthouse: 100 Performance, 100 Accessibility, 100 Best Practices,
+  100 SEO; FCP 0.9 s, LCP 1.2 s, TBT 70 ms, CLS 0. See
+  `.factory/polish-3-artifacts/lighthouse-live.json`.
+- Cold live screenshots: `live-home-390.png`, `live-home-1280.png`,
+  `live-demo-390.png`, and `live-404.png` in
+  `.factory/polish-3-artifacts/`.
 
-## Next steps
-
-Update the color-matching test to use the existing receiver-ready helper before both picker starts. Apply the proposed plain-language rewrites in the report. Then rerun all 21 claim commands from a fresh clone and repeat the complete live review.
-
-## Verification commands
+## Run and deploy
 
 ```sh
 npm ci
-npm run build
-npm run typecheck
-npm run lint
-npm test
-npm test -- --grep @claim:color-matching-limits
+npm run check
 npm run verify:deployment
 npm run verify:browser
-/opt/fleet/lib/verify-url.sh https://color-status-labeler.sociobot.in .factory/review-3-artifacts
 ```
+
+`npm run build` produces the MV3 extension and deployable `dist/site/`.
+Deploy that directory with the scoped Static Web Apps configuration.
+
+## Known gaps
+
+None.

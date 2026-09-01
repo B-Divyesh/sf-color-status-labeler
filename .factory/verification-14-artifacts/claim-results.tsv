@@ -1,0 +1,23 @@
+claim_id	exit_code	command
+color-vision-audience	0	npm test -- --grep @claim:color-vision-audience
+first-screen-demo	0	npm test -- --grep @claim:first-screen-demo
+demo-sandbox	0	npm test -- --grep @claim:demo-sandbox
+download-extension	0	npm test -- --grep @claim:download-extension
+cache-freshness	0	npm test -- --grep @claim:cache-freshness
+static-build-output	0	npm test -- --grep @claim:static-build-output
+free-download	0	npm test -- --grep @claim:free-download
+no-account	0	npm test -- --grep @claim:no-account
+site-runtime-privacy	0	npm test -- --grep @claim:site-runtime-privacy
+backup-transfer	0	npm test -- --grep @claim:backup-transfer
+rule-deletion	0	npm test -- --grep @claim:rule-deletion
+page-unchanged	0	npm test -- --grep @claim:page-unchanged
+extension-runtime-privacy	0	npm test -- --grep @claim:extension-runtime-privacy
+release-identity	0	npm test -- --grep @claim:release-identity
+core-labeling	0	npm test -- --grep @claim:core-labeling
+picker-style-properties	0	npm test -- --grep @claim:picker-style-properties
+color-matching-limits	0	npm test -- --grep @claim:color-matching-limits
+grayscale-legibility	0	npm test -- --grep @claim:grayscale-legibility
+local-rules	0	npm test -- --grep @claim:local-rules
+click-through	0	npm test -- --grep @claim:click-through
+rules-return	0	npm test -- --grep @claim:rules-return
+offline-demo	0	npm test -- --grep @claim:offline-demo

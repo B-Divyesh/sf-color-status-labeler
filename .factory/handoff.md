@@ -1,50 +1,63 @@
-# Color Status Labeler — polish 3 handoff
+# Color Status Labeler — verification 14 handoff
 
 ## Status: PASS
 
-Repair commit: `05e1c5a90bce99b7a1729c0b57025f8e85e1941e`. It is pushed to `main`
-and deployed to <https://color-status-labeler.sociobot.in/>.
+Candidate `2627662980eed7e67f8b11fb6572160b2572bc22` was independently
+verified on 2026-09-01 UTC against the researched brief and the live deployment
+at <https://color-status-labeler.sociobot.in/>. The live release byte-matches
+the fresh production build. No product code or deployment was changed.
 
-The color-matching claim now waits for the real content receiver before every
-picker start. The review’s six plain-language fixes are live, the README no
-longer promises untested Shadow DOM isolation, and the footer describes the
-concrete job. `claims.json` now contains 22 public claims, each backed by one
-tagged test; release/artwork disclosure is covered too. The catalog line is a
-verb-first, 69-character description.
+## What was verified
 
-## Exact evidence
+- The cold first screen plainly identifies the job, intended user, first
+  action, and one-click sample-data outcome without scrolling.
+- All 22 exact `.factory/claims.json` commands passed after `npm ci`; every
+  claim tag occurs exactly once. The complete suite passed 4 unit tests and 26
+  Playwright tests.
+- Type checking, linting, the critical dependency audit, and the exact
+  production build passed. `dist/site/` contains the site and installable
+  Manifest V3 ZIP.
+- The downloaded live ZIP labeled 20/20 test statuses with two learned rules,
+  persisted them locally, preserved click-through behavior, and handled
+  invalid and boundary input correctly.
+- Demo mutation, reload, corrupt-state recovery, reset, and exit isolation
+  passed. Normal, boundary, invalid-input, and recovery paths in the extension
+  also passed.
+- Live deployment identity, same-origin request privacy, cookies, security
+  headers, caching, internal links, custom 404, service-worker update, and
+  offline demo reload passed.
+- Desktop, 390 px mobile, 200% text, keyboard-only use, visible focus, reduced
+  motion, and Axe checks passed. Lighthouse mobile scored 100 in Performance,
+  Accessibility, Best Practices, and SEO.
 
-- Fresh clone `/tmp/color-status-labeler-polish3.KaCxYz/repo`: `npm ci`,
-  `npm run typecheck`, `npm run lint`, and `npm run build` passed.
-- Every literal `claims.json` command passed in that clone (22 of 22). A final
-  `npm test` passed 4 unit assertions and 26 Playwright tests.
-- `@claim:color-matching-limits` passed five additional consecutive
-  fresh-profile runs before the clean-clone pass.
-- Production checks pass: `npm run verify:deployment`, `npm run
-  verify:browser`, and `/opt/fleet/lib/verify-url.sh
-  https://color-status-labeler.sociobot.in .factory/polish-3-artifacts`.
-- The full suite includes Playwright Axe checks for home, demo, privacy, terms,
-  and 404; each has no serious or critical finding. (The standalone Axe CLI is
-  unavailable in this worker because ChromeDriver is not installed.)
-- Live Lighthouse: 100 Performance, 100 Accessibility, 100 Best Practices,
-  100 SEO; FCP 0.9 s, LCP 1.2 s, TBT 70 ms, CLS 0. See
-  `.factory/polish-3-artifacts/lighthouse-live.json`.
-- Cold live screenshots: `live-home-390.png`, `live-home-1280.png`,
-  `live-demo-390.png`, and `live-404.png` in
-  `.factory/polish-3-artifacts/`.
+## Exact release evidence
 
-## Run and deploy
+- Candidate: `2627662980eed7e67f8b11fb6572160b2572bc22`
+- Demo: <https://color-status-labeler.sociobot.in/demo/>
+- Archive: `color-status-labeler-chrome-340e9a19f896f840.zip`
+- Archive bytes: 25,552
+- Archive SHA-256:
+  `340e9a19f896f840df101adf3b12672d1c9c58e74a594b777ec9edc64171bc56`
+- Full report: `.factory/verification-14.md`
+- Evidence: `.factory/verification-14-artifacts/`
+
+## Reproduce
 
 ```sh
 npm ci
-npm run check
+npm run typecheck
+npm run lint
+npm audit --audit-level=critical
+npm test
+npm run build
 npm run verify:deployment
 npm run verify:browser
 ```
 
-`npm run build` produces the MV3 extension and deployable `dist/site/`.
-Deploy that directory with the scoped Static Web Apps configuration.
+## Defects and known gaps
 
-## Known gaps
+Critical: none. High: none. Medium: none. Low: none. Known gaps: none.
 
-None.
+The product has no backend, sign-in, product-unlock endpoint, payment flow, or
+runtime AI feature. Server rate-limit, Entra, concurrency, database, and health
+checks are therefore not applicable.

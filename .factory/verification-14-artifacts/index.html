@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Add words and patterns to color-only dashboard and map statuses. A local Chrome extension for people with color-vision deficiency." />
+    <meta name="theme-color" content="#F6F0DE" />
+    <link rel="canonical" href="https://color-status-labeler.sociobot.in/" />
+    <title>Color Status Labeler — label color-only statuses</title>
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Color Status Labeler" />
+    <meta property="og:title" content="Color Status Labeler — label color-only statuses" />
+    <meta property="og:description" content="Add words and patterns to color-only dashboard and map statuses." />
+    <meta property="og:url" content="https://color-status-labeler.sociobot.in/" />
+    <meta property="og:image" content="https://color-status-labeler.sociobot.in/assets/color-status-labeler-social.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A cassette with tape tracks shown as stripes, dots, crosshatch, and bars." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Color Status Labeler — label color-only statuses" />
+    <meta name="twitter:description" content="Add words and patterns to color-only dashboard and map statuses." />
+    <meta name="twitter:image" content="https://color-status-labeler.sociobot.in/assets/color-status-labeler-social.jpg" />
+    <meta name="twitter:image:alt" content="A cassette with tape tracks shown as stripes, dots, crosshatch, and bars." />
+    <script type="module" crossorigin src="/assets/immutable/main-CnslmFfT.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/immutable/main-CsUWU9aB.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <p id="offline-note" class="offline-note" role="status" hidden>You’re offline. This guide still works; the extension download may not.</p>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Color Status Labeler home">Color Status Labeler</a>
+      <nav aria-label="Primary navigation">
+        <a href="/demo/">Try the demo</a>
+        <a href="#how">How it works</a>
+        <a href="#limits">Color-matching limits</a>
+        <a class="mini-download" href="/downloads/color-status-labeler-chrome-340e9a19f896f840.zip" download="color-status-labeler-chrome.zip">Download extension</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span>Browser extension</span><span>Local rules</span></p>
+          <h1 id="hero-title" tabindex="-1">Label color-only dashboard statuses.</h1>
+          <p class="lede">For people with color-vision deficiency who need dashboard and map statuses shown with readable words and patterns.</p>
+          <div class="hero-actions">
+            <a class="button primary" data-demo href="/demo/">Try it with sample data <span aria-hidden="true">→</span></a>
+            <a class="button secondary" href="/downloads/color-status-labeler-chrome-340e9a19f896f840.zip" download="color-status-labeler-chrome.zip">Download for Chrome <span aria-hidden="true">↓</span></a>
+          </div>
+          <p class="action-note">Open a sample dispatch board. Change labels without changing your own rules.</p>
+          <ul class="plain-facts" aria-label="Product facts"><li>Rules stay in Chrome local storage.</li><li>Sample guide works offline after its first visit.</li><li>Free to download.</li></ul>
+        </div>
+        <figure class="hero-art">
+          <picture>
+            <source media="(max-width: 760px)" srcset="/assets/cassette-signal-hero-768.webp" />
+            <img src="/assets/cassette-signal-hero-1280.webp" width="1280" height="853" alt="An open cassette sends tape into four distinct tracks: stripes, dots, crosshatch, and bars." fetchpriority="high" decoding="async" />
+          </picture>
+          <figcaption>Patterns and labels make each status readable.</figcaption>
+        </figure>
+      </section>
+
+      <section class="demo-section" aria-labelledby="demo-title">
+        <div class="section-number" aria-hidden="true">Sample dashboard preview</div>
+        <div class="demo-heading">
+          <div>
+            <h2 id="demo-title">See words and patterns on sample statuses</h2>
+          <p>Turn labels on or off. The underlying dashboard stays intact.</p>
+          </div>
+          <label class="demo-switch">
+            <span>Show labels</span>
+            <input id="demo-toggle" type="checkbox" role="switch" checked />
+          </label>
+        </div>
+        <div class="dashboard" aria-label="Example operations dashboard">
+          <div class="dash-top"><strong>Dispatch board / North</strong><span>08:42 UTC</span></div>
+          <div class="dash-grid">
+            <article><span class="dot green"></span><strong>Line 03</strong><small>Packaging</small><span class="added-label stripes">Ready</span></article>
+            <article><span class="dot yellow"></span><strong>Line 07</strong><small>Inspection</small><span class="added-label dots">Waiting</span></article>
+            <article><span class="dot red"></span><strong>Line 11</strong><small>Assembly</small><span class="added-label crosshatch">Blocked</span></article>
+          </div>
+          <div class="demo-legend"><span>Status legend</span><b class="stripes">Ready</b><b class="dots">Waiting</b><b class="crosshatch">Blocked</b></div>
+        </div>
+      </section>
+
+      <section id="how" class="how" aria-labelledby="how-title">
+        <div class="section-intro">
+          <p class="kicker">Set up a status label</p>
+          <h2 id="how-title">Label a status in three steps</h2>
+        </div>
+        <ol>
+          <li><span class="step">01</span><div><h3>Open the picker</h3><p>Visit the dashboard or map, open the extension, and choose “Pick a status color.”</p></div></li>
+          <li><span class="step">02</span><div><h3>Choose a label and pattern</h3><p>Click a recurring status, give it a plain-language label, and choose a distinct pattern.</p></div></li>
+          <li><span class="step">03</span><div><h3>Read labeled matching statuses</h3><p>Matching statuses get badges that do not block clicks. Your rules return on that site.</p></div></li>
+        </ol>
+      </section>
+
+      <section class="principles" aria-labelledby="principles-title">
+        <h2 id="principles-title">How labels stay readable and local</h2>
+        <div class="principle-grid">
+          <article><span aria-hidden="true">▧</span><h3>Use more than color</h3><p>Every labeled status gets text and a distinct graphic pattern. The legend stays useful in grayscale.</p></article>
+          <article><span aria-hidden="true">⌂</span><h3>Keep rules on your device</h3><p>No account or analytics. Rules stay in local extension storage.</p></article>
+          <article><span aria-hidden="true">↗</span><h3>Does not change page controls</h3><p>Badges cannot receive clicks. It does not read passwords, submit forms, or change page controls.</p></article>
+        </div>
+      </section>
+
+      <section id="limits" class="limits" aria-labelledby="limits-title">
+        <div class="warning-stamp" aria-hidden="true">COLOR-MATCHING LIMITS</div>
+        <div>
+          <h2 id="limits-title">Limits of color matching</h2>
+          <p>A saved label follows nearby solid colors. Gradients and larger color changes are not matched. Check each label after a site changes. Confirm important status on the original dashboard or map.</p>
+          <p>Use it to help read statuses. Do not use it to confirm accessibility or critical decisions.</p>
+        </div>
+      </section>
+
+      <section class="final-cta" aria-labelledby="cta-title">
+        <p class="kicker">Install in your browser</p>
+        <h2 id="cta-title">Add readable labels to your statuses.</h2>
+        <a class="button primary" href="/downloads/color-status-labeler-chrome-340e9a19f896f840.zip" download="color-status-labeler-chrome.zip">Download the extension <span aria-hidden="true">↓</span></a>
+        <p>Unzip the download, then load the folder in Chrome’s Extensions page.</p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div><strong>Color Status Labeler</strong><p>Adds words and patterns to color-only dashboard statuses.</p></div>
+      <nav aria-label="Legal"><a href="/demo/">Demo</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
+      <p class="disclosure">Built by Param Factory · Version 1.0.0 · Hero artwork was generated for this product with Azure AI Foundry. No third-party runtime assets or tracking scripts.</p>
+    </footer>
+  </body>
+</html>

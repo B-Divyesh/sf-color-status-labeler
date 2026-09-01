@@ -1,74 +1,51 @@
-# Color Status Labeler — polish 2 handoff
+# Color Status Labeler — verification 12 handoff
 
-## Status: PASS
+## Status: FAIL
 
-Every finding in `.factory/review-1.md` and `.factory/review-2.md` is fixed,
-tested, deployed, and rechecked on production. The repair is in commits
-`e5b2ca9` and `d292b20` on `main`.
+Independent QA was completed on 2026-09-01 UTC for candidate
+`f83c1556d2f9ab8b047011d56400817e652cb4aa` at
+<https://color-status-labeler.sociobot.in/>.
 
-## What changed
+The live deployment byte-matches the candidate, the extension's core job works,
+all 21 installed claim commands passed in their initial sweep, and the build,
+typecheck, lint, privacy, accessibility, offline, and performance checks are
+otherwise healthy. The candidate still fails acceptance for three findings:
 
-- Moved the full sample-data decision path into the 1365×768 and 1280×720
-  first viewport while preserving the cassette-era field-guide identity.
-- Kept `/demo/` and `?demo=1` one-click, isolated, resettable, and visibly
-  marked as sample data.
-- Added four claim regressions: cold first-screen placement, picker support for
-  background/top-border/text colors, exact color-matching limits, and static
-  build/deployment behavior. All 21 claims have one matching test tag.
-- Replaced every reviewed vague heading and the picker’s signal/hue jargon with
-  direct status-label language.
-- Removed the accidental SPA fallback. Unknown URLs now return the designed
-  404 page with HTTP 404, while real page routes and offline demo reload remain
-  intact.
-- Updated the catalog description, copy audit, design note, README, claims
-  manifest, and round-2 finding map.
+1. **High:** `npm run check` failed the required
+   `@claim:picker-style-properties` check. A 10-run focused repetition passed
+   9 times and failed once, confirming that the check is intermittent.
+2. **High:** after the one-click demo action, the sample dispatch board begins
+   below the first viewport at both 1365 × 768 and 390 × 844. The initial demo
+   screen does not yet show the product in use.
+3. **Medium:** the extension empty state still says “No tracks labeled yet”
+   and shows `A / 01`, contrary to the required status-label terminology and
+   the repository's copy audit.
 
-## Verification
+## Verification summary
 
-Fresh clone `/tmp/color-status-labeler-polish2-final.JGpyFL` at `d292b20`:
+- `npm ci`: PASS; zero reported vulnerabilities.
+- All 21 exact claim commands after installation: PASS in the initial sweep.
+- `npm run typecheck`: PASS.
+- `npm run lint`: PASS.
+- Standalone `npm test`: PASS; 4 unit assertions and 24 browser checks.
+- `npm run build`: PASS; `dist/site/` and a 25,422-byte Chrome ZIP created.
+- `npm run check`: FAIL; 23/24 browser checks passed.
+- Focused claim repetition: FAIL; 9/10 passed.
+- `npm run verify:deployment`: PASS; deployed files match the local build.
+- `npm run verify:browser`: PASS.
+- `/opt/fleet/lib/verify-url.sh`: PASS with no normal-page console errors.
+- Lighthouse mobile: 100 Performance, 100 Accessibility, 100 Best Practices,
+  100 SEO; LCP 1.22 s, TBT 38 ms, CLS 0.
+- Live request log: 44 requests, product origin only, zero cookies.
+- Axe: zero serious or critical findings on all public routes and the 404 page.
+- Service-worker update and offline `/demo/` reload: PASS.
 
-```sh
-npm ci
-npm run check
-```
+No product code was changed. Full findings and exact measurements are in
+[`.factory/verification-12.md`](verification-12.md), with screenshots and
+Lighthouse output in `.factory/verification-evidence-12/`.
 
-This passed typecheck, lint, 4 Vitest assertions, 24 Playwright tests, and the
-production build. Each of the 21 literal claim commands in
-`.factory/claims.json` then passed independently. `npm audit
---audit-level=critical` reports zero vulnerabilities.
+## Required next work
 
-The build produces `dist/site/`, a 46.43KB unpacked Manifest V3 extension, and
-a 25,422-byte ZIP. Initial site JavaScript is 3,804 bytes, CSS is 14,959 bytes,
-and the mobile hero is 65,156 bytes.
-
-## Production evidence
-
-Deployed the built `dist/site/` artifact to the existing
-`sf-color-status-labeler` Static Web App without changing DNS or any other
-resource.
-
-- Site: <https://color-status-labeler.sociobot.in/>
-- Demo: <https://color-status-labeler.sociobot.in/demo/>
-- `npm run verify:deployment`: pass; every deployed route, asset, worker, and
-  extension ZIP matches the local build.
-- `npm run verify:browser`: pass; desktop/mobile layout, viewport placement,
-  focus and Back behavior, Axe, privacy, worker update, and offline reload.
-- `/opt/fleet/lib/verify-url.sh`: pass; title, `lang`, `h1`, `main`, image text,
-  buttons, and console checks.
-- Cold viewport evidence: action bottom 550.7px and note bottom 606.1px at
-  1365×768; action bottom 521.0px and note bottom 576.3px at 1280×720.
-- `/not-a-real-route-polish-2`: HTTP 404 with the designed 404 title.
-- `?demo=1`: redirects to `/demo/`; editing writes only
-  `demo:color-status-labeler:sample-v1`; Reset removes it.
-- Requests observed across the live route/demo flow: product origin only, no
-  cookies, and no console errors.
-- Live Lighthouse 12.8.2: 100 Performance, 100 Accessibility, 100 Best
-  Practices, 100 SEO; FCP 0.8s, LCP 1.2s, TBT 0ms, CLS 0.
-
-See `.factory/polish-2.md` for every finding mapped to its change and evidence.
-Raw screenshots, Lighthouse JSON, and live checks are in
-`.factory/polish-2-artifacts/`.
-
-## Known gaps and next steps
-
-None.
+Stabilize the extension claim check, put a usable sample view in the first demo
+viewport, replace the popup shorthand, then repeat all claim, quality, live,
+and deployment checks before release.

@@ -1,20 +1,4 @@
 {
-  "navigationFallback": {
-    "rewrite": "/index.html",
-    "exclude": [
-      "/assets/*",
-      "/downloads/*",
-      "/sw.js",
-      "/icon.svg",
-      "/robots.txt",
-      "/sitemap.xml",
-      "/404",
-      "/404.html",
-      "/demo/*",
-      "/privacy/*",
-      "/terms/*"
-    ]
-  },
   "globalHeaders": {
     "Content-Security-Policy": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data:; script-src 'self'; style-src 'self'; connect-src 'self'; worker-src 'self'; object-src 'none'; upgrade-insecure-requests",
     "Permissions-Policy": "geolocation=(), camera=(), microphone=(), payment=(), interest-cohort=()",

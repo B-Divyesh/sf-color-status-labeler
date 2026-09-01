@@ -36,6 +36,9 @@ try {
     const violations = await new AxeBuilder({ page }).analyze();
     check(!violations.violations.some((item) => ['serious', 'critical'].includes(item.impact ?? '')), `${path} has serious or critical axe findings.`);
   }
+  const missingResponse = await context.request.get(new URL('/not-a-real-route-verification', base).href);
+  check(missingResponse.status() === 404, `unknown route returned ${missingResponse.status()} instead of 404.`);
+  check((await missingResponse.text()).includes('<title>Page not found — Color Status Labeler</title>'), 'unknown route did not use the designed 404 page.');
 
   await page.goto(base.href, { waitUntil: 'networkidle' });
   check((await page.locator('.hero').textContent())?.includes('people with color-vision deficiency'), 'first screen does not name people with color-vision deficiency.');

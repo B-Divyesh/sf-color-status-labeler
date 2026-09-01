@@ -89,7 +89,7 @@ exceeds 22 words, and the review-specific revisions are:
 | Check and retrain each label after a site changes. | 9 | Pass |
 | Use it to help read statuses. | 6 | Pass |
 | Do not use it to confirm accessibility or critical decisions. | 10 | Pass |
-| Its host configuration keeps the extension download and offline worker outside page routing. | 13 | Pass; `static-build-output` |
+| Its host configuration preserves the extension download, offline worker, real page routes, and designed 404. | 15 | Pass; `static-build-output` |
 | It marks versioned downloads and code for one-year caching. | 9 | Pass; `static-build-output` |
 
 All 21 manifest IDs occur exactly once as `@claim:<id>` tags in `tests/`.

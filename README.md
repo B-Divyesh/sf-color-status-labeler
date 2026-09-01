@@ -59,7 +59,7 @@ npm run build        # extension ZIP + static site in dist/site/
 - `dist/site/`: deployable static site; `index.html` is at this exact root.
 - `dist/site/downloads/color-status-labeler-chrome-<digest>.zip`: packaged extension linked by the site. The digest changes with the package so returning users cannot receive an old release from cache.
 
-Deploy only `dist/site/`. Its host configuration keeps the extension download and offline worker outside page routing. It marks versioned downloads and code for one-year caching. Infrastructure, DNS, and billing are outside this repository.
+Deploy only `dist/site/`. Its host configuration preserves the extension download, offline worker, real page routes, and designed 404. It marks versioned downloads and code for one-year caching. Infrastructure, DNS, and billing are outside this repository.
 
 ## Architecture and privacy
 

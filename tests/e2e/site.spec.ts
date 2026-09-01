@@ -97,10 +97,10 @@ test('@claim:free-download demo links to the extension ZIP without a payment ste
   await expect(page.getByRole('textbox', { name: /card|billing|payment|account/i })).toHaveCount(0);
 });
 
-test('@claim:static-build-output the deployable site preserves downloads, routing, and cache policy', async ({ page }) => {
+test('@claim:static-build-output the deployable site preserves downloads, real routes, its 404, and cache policy', async ({ page }) => {
   const policy = await page.request.get('/staticwebapp.config.json');
-  const config = await policy.json() as { navigationFallback: { exclude: string[] }; globalHeaders: Record<string, string>; responseOverrides: Record<string, { rewrite: string; statusCode: number }>; routes: Array<{ route: string; rewrite?: string; headers: Record<string, string> }> };
-  expect(config.navigationFallback.exclude).toEqual(expect.arrayContaining(['/downloads/*', '/sw.js', '/404']));
+  const config = await policy.json() as { navigationFallback?: unknown; globalHeaders: Record<string, string>; responseOverrides: Record<string, { rewrite: string; statusCode: number }>; routes: Array<{ route: string; rewrite?: string; statusCode?: number; headers?: Record<string, string> }> };
+  expect(config.navigationFallback).toBeUndefined();
   expect(config.globalHeaders['Content-Security-Policy']).toContain("worker-src 'self'");
   expect(config.globalHeaders['Permissions-Policy']).toContain('geolocation=()');
   expect(config.responseOverrides['404']).toEqual({ rewrite: '/404.html', statusCode: 404 });
@@ -117,6 +117,7 @@ test('@claim:static-build-output the deployable site preserves downloads, routin
   const worker = await page.request.get('/sw.js');
   expect(home.ok()).toBe(true);
   expect(worker.ok()).toBe(true);
+  expect(config.responseOverrides['404']).toEqual({ rewrite: '/404.html', statusCode: 404 });
 });
 
 test('the designed not-found page is reachable', async ({ page }) => {

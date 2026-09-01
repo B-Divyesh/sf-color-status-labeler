@@ -36,10 +36,10 @@
   },
   {
     "id": "static-build-output",
-    "claim": "The deployable site keeps the extension download and offline worker outside page routing and marks versioned downloads and code for one-year caching.",
+    "claim": "The deployable site preserves the extension download, offline worker, real page routes, and designed 404, and marks versioned downloads and code for one-year caching.",
     "where": "README build outputs",
     "test": "npm test -- --grep @claim:static-build-output",
-    "sandbox": "fresh production build; inspect the shipped static host configuration and request the built home and service worker"
+    "sandbox": "fresh production build; inspect the shipped static host configuration and request the built home, routes, designed 404, and service worker"
   },
   {
     "id": "free-download",

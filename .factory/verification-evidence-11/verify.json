@@ -1,0 +1,14 @@
+{
+  "url": "https://color-status-labeler.sociobot.in/",
+  "loadMs": 724,
+  "errors": [],
+  "a11y": {
+    "title": "Color Status Labeler — label color-only statuses",
+    "lang": "en",
+    "h1": 1,
+    "main": true,
+    "imgsMissingAlt": 0,
+    "buttonsUnlabeled": 0,
+    "textLength": 2360
+  }
+}

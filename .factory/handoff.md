@@ -1,64 +1,59 @@
-# Color Status Labeler — polish 1 handoff
+# Color Status Labeler — verification 11 handoff
 
-## Status
+## Status: PASS
 
-Repair commit `d76dc04` fixes every finding in [review-1.md](review-1.md).
-It and the evidence commits `a35aeaa` and `65f2d06` are pushed to `main`.
-The static host has not yet consumed those commits, so final live verification
-is pending deployment propagation.
+Independent QA passed for candidate
+`b896bc646510c0c021a6881311edba5a7b85232e` at
+<https://color-status-labeler.sociobot.in/> on 2026-09-01 UTC.
 
-## What changed
+The live deployment byte-matches the candidate production build. The
+downloaded Manifest V3 extension completes the brief's user-trained
+word-and-pattern labeling flow, keeps rules local, restores them on reload,
+and leaves page controls usable. The first screen states the job, audience,
+and one-click sample action on desktop and 390px mobile.
 
-- Added reliable destination-heading focus and polite route announcement for
-  internal navigation and Back, without disrupting cold-load skip-link order.
-- Rewrote the reviewed vague, decorative, technical, and overlong public copy.
-- Made the compact mobile action explicitly say **Download extension**.
-- Added real `grayscale-legibility` and public `site-runtime-privacy` claims,
-  each with a tagged observable browser test. The demo’s missing Bars pattern
-  now has an actual visual pattern.
-- Kept the isolated `/demo/` and `?demo=1` path, persistent banner, reset, and
-  start-for-real boundary intact.
-- Added the required catalog description and updated the copy audit.
+## Verification summary
 
-## Verification
+- All 17 exact `.factory/claims.json` commands passed after `npm ci`.
+- `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, and
+  `npm audit --audit-level=critical` passed.
+- `npm test` reported 4 passing unit assertions and 19 passing Playwright
+  tests.
+- `npm run verify:deployment` confirmed all public artifacts and the
+  25,451-byte extension ZIP match `dist/site/`.
+- `npm run verify:browser` confirmed desktop/mobile behavior, keyboard use,
+  Axe checks, request privacy, service-worker update, and offline reload.
+- Fresh Lighthouse mobile scores were 100 Performance, 100 Accessibility,
+  100 Best Practices, and 100 SEO; LCP was 1.21s and CLS was 0.
+- Independent normal, empty, 32-character boundary, literal-text, corrupt
+  state, reset, exit, persistence, and cancellation paths passed.
+- Browser logs showed only the product origin, no cookies, and no console or
+  page errors. Live security and cache headers meet the repository policy.
 
-From the fresh clone at `/tmp/color-status-labeler-clean.s4w09X`:
+## Defects and known gaps
+
+- Critical: none.
+- High: none.
+- Medium: none.
+- Low: none.
+- Known gaps: none found in candidate scope. The documented limitation remains
+  that color matching can need retraining after theme or site changes.
+
+## Reproduce
 
 ```sh
 npm ci
-npm run check
-```
-
-Both passed: 4 unit assertions, 19 Playwright tests, typecheck, lint, real
-extension package build, static site build, Axe route scans, offline reload,
-mobile/200% text checks, metadata/404 checks, and privacy request checks.
-Every one of the 17 literal `claims.json` test commands also passed separately
-in that clean clone. Local command logs and screenshots are committed under
-`.factory/polish-artifacts/`. See [polish-1.md](polish-1.md) for the one-to-one
-finding map and evidence.
-
-`node scripts/verify-live-browser.mjs http://127.0.0.1:4173/` also passed
-against the local production build, including the new route-focus and Back
-checks.
-
-## Deploy and verify
-
-The deployable artifact remains `dist/site/`. The final cold check at
-`https://color-status-labeler.sociobot.in/` still served the prior artifact:
-it lacks “Download extension”, “COLOR-MATCHING LIMITS”, and
-`#route-announcement`; the live verifier correctly fails while looking for
-that missing route announcement. After the static deployment updates, run:
-
-```sh
+npm run typecheck
+npm run lint
+npm test
+npm run build
+npm audit --audit-level=critical
 npm run verify:deployment
 npm run verify:browser
 ```
 
-Then visit `https://color-status-labeler.sociobot.in/` cold, use **Try the
-demo**, navigate Back, and verify the destination `h1` receives focus.
+Full results are in `.factory/verification-11.md`; fresh screenshots,
+`verify-url.sh` output, and Lighthouse JSON are under
+`.factory/verification-evidence-11/`.
 
-## Known gaps
-
-No source, test, build, or product gap remains locally. The only outstanding
-item is static-host propagation of the already pushed `main` branch. Once the
-host updates, the two commands above provide the required live evidence.
+No product code was changed during verification.

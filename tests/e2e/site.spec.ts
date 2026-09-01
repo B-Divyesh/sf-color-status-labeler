@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 function contrastRatio(first: string, second: string) {
   const luminance = (color: string) => {
@@ -113,11 +115,40 @@ test('@claim:static-build-output the deployable site preserves downloads, real r
   ]));
   expect(config.routes.some((route) => route.route === '/downloads/color-status-labeler-chrome.zip')).toBe(false);
   expect(config.routes.some((route) => route.rewrite?.includes('color-status-labeler-chrome.bin'))).toBe(false);
-  const home = await page.request.get('/');
+  for (const path of ['/', '/demo/', '/privacy/', '/terms/']) {
+    const response = await page.request.get(path);
+    expect(response.ok(), `${path} must remain a direct page URL`).toBe(true);
+    await page.goto(path);
+    await expect(page.locator('h1')).toHaveCount(1);
+  }
+  const notFound = await page.request.get('/404.html');
+  expect(notFound.ok()).toBe(true);
+  expect(await notFound.text()).toContain('This page is not here.');
   const worker = await page.request.get('/sw.js');
-  expect(home.ok()).toBe(true);
   expect(worker.ok()).toBe(true);
-  expect(config.responseOverrides['404']).toEqual({ rewrite: '/404.html', statusCode: 404 });
+  const workerSource = await worker.text();
+  expect(workerSource).toContain('"/demo/"');
+  expect(workerSource).toContain('self.skipWaiting()');
+  const archivePath = await page.locator('a[download]').first().getAttribute('href');
+  expect(archivePath).toMatch(/^\/downloads\/color-status-labeler-chrome-[a-f0-9]{16}\.zip$/u);
+  expect((await page.request.get(archivePath!)).ok()).toBe(true);
+});
+
+test('@claim:release-identity the public release name, version, and artwork disclosure match the documented original asset', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.site-footer')).toContainText('Version 1.0.0');
+  await expect(page.locator('.site-footer')).toContainText('Hero artwork was generated for this product with Azure AI Foundry.');
+  const hero = await page.request.get('/assets/cassette-signal-hero-1280.webp');
+  expect(hero.ok()).toBe(true);
+  expect(hero.headers()['content-type']).toContain('image/webp');
+
+  const packageVersion = JSON.parse(readFileSync(resolve('package.json'), 'utf8')) as { version: string };
+  const designRecord = readFileSync(resolve('.factory/design.md'), 'utf8');
+  const promptRecord = JSON.parse(readFileSync(resolve('assets/src/cassette-signal-hero.png.json'), 'utf8')) as { deployment?: string; prompt?: string };
+  expect(packageVersion.version).toBe('1.0.0');
+  expect(designRecord).toContain('Generator: Azure AI Foundry `factory-image`');
+  expect(promptRecord.deployment).toBe('factory-image');
+  expect(promptRecord.prompt).toContain('Cassette-era zine editorial still life');
 });
 
 test('the designed not-found page is reachable', async ({ page }) => {

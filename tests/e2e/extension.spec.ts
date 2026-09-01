@@ -93,11 +93,7 @@ test('@claim:core-labeling @claim:local-rules @claim:click-through @claim:rules-
     const origin = new URL(page.url()).origin;
     const host = page.locator('#color-status-labeler-root');
     await expect(host).toBeAttached();
-    await worker.evaluate(async () => {
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (!tab.id) throw new Error('No active tab');
-      await chrome.tabs.sendMessage(tab.id, { type: 'START_PICKER' });
-    });
+    await startPickerAfterReceiverReady(worker, origin);
     await expect(host.locator('.picker-bar')).toContainText('Click a colored status');
     const pickerCancel = host.locator('.picker-bar').getByRole('button', { name: 'Cancel' });
     await pickerCancel.focus();
@@ -139,11 +135,7 @@ test('@claim:core-labeling @claim:local-rules @claim:click-through @claim:rules-
     await expect(host.locator('.badge')).toContainText('Ready');
 
     const openKeyboardPicker = async () => {
-      await worker.evaluate(async () => {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        if (!tab.id) throw new Error('No active tab');
-        await chrome.tabs.sendMessage(tab.id, { type: 'START_PICKER' });
-      });
+      await startPickerAfterReceiverReady(worker, origin);
       await expect(host.locator('.picker-bar')).toBeVisible();
       await page.getByRole('button', { name: 'Apply sample label' }).focus();
       await page.keyboard.press('Enter');
@@ -290,6 +282,7 @@ test('@claim:color-matching-limits labels follow nearby solid colors but not gra
     worker ??= await context.waitForEvent('serviceworker');
     const page = await context.newPage();
     await page.goto('/demo/');
+    const origin = new URL(page.url()).origin;
     await page.evaluate(() => {
       const fixture = document.createElement('section');
       fixture.innerHTML = `
@@ -298,11 +291,7 @@ test('@claim:color-matching-limits labels follow nearby solid colors but not gra
       document.body.append(fixture);
     });
     const host = page.locator('#color-status-labeler-root');
-    const startPicker = async () => worker.evaluate(async () => {
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (!tab.id) throw new Error('No active tab');
-      await chrome.tabs.sendMessage(tab.id, { type: 'START_PICKER' });
-    });
+    const startPicker = async () => startPickerAfterReceiverReady(worker, origin);
 
     await startPicker();
     await page.locator('#changing-color').click();
@@ -469,6 +458,7 @@ test('@claim:page-unchanged labels leave form values, password values, links, an
     worker ??= await context.waitForEvent('serviceworker');
     const page = await context.newPage();
     await page.goto('/demo/');
+    const origin = new URL(page.url()).origin;
     await page.evaluate(() => {
       const form = document.createElement('form');
       form.id = 'unchanged-form';
@@ -501,11 +491,7 @@ test('@claim:page-unchanged labels leave form values, password values, links, an
       document.body.append(form, password, text, link);
     });
 
-    await worker.evaluate(async () => {
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (!tab.id) throw new Error('No active tab');
-      await chrome.tabs.sendMessage(tab.id, { type: 'START_PICKER' });
-    });
+    await startPickerAfterReceiverReady(worker, origin);
     await page.getByRole('button', { name: 'Apply sample label' }).focus();
     await page.keyboard.press('Enter');
     const host = page.locator('#color-status-labeler-root');

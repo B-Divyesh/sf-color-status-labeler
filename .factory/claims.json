@@ -29,14 +29,14 @@
   },
   {
     "id": "cache-freshness",
-    "claim": "The content-addressed package URL changes with the extension package, so returning users do not receive an older cached release.",
+    "claim": "Each extension package gets a new download URL, so browsers do not reuse an older package.",
     "where": "README build outputs",
     "test": "npm test -- --grep @claim:cache-freshness",
-    "sandbox": "fresh browser context; wait for the site worker, seed a stale package at the former fixed download path, then fetch the current content-addressed URL and assert it returns the ZIP"
+    "sandbox": "fresh browser context; wait for the site worker, seed a stale package at the former fixed download path, then fetch the current package URL and assert it returns the ZIP"
   },
   {
     "id": "static-build-output",
-    "claim": "The deployable site preserves the extension download, offline worker, real page routes, and designed 404, and marks versioned downloads and code for one-year caching.",
+    "claim": "The deployed site keeps the download, offline guide, page URLs, and custom not-found page working. It caches versioned downloads and code for one year.",
     "where": "README build outputs",
     "test": "npm test -- --grep @claim:static-build-output",
     "sandbox": "fresh production build; inspect the shipped static host configuration and request the built home, routes, designed 404, and service worker"
@@ -89,6 +89,13 @@
     "where": "README and privacy page",
     "test": "npm test -- --grep @claim:extension-runtime-privacy",
     "sandbox": "fresh Chromium extension profile; record every HTTP request while opening the sample and popup, assert only the sample origin, no cookies, no account fields, local extension resources, and no cookie/identity/webRequest permissions"
+  },
+  {
+    "id": "release-identity",
+    "claim": "The site identifies version 1.0.0 and discloses original hero artwork generated for this product with Azure AI Foundry.",
+    "where": "site footer and design record",
+    "test": "npm test -- --grep @claim:release-identity",
+    "sandbox": "fresh landing page; assert the public footer disclosure, shipped hero asset, matching package version, and recorded original-artwork provenance"
   },
   {
     "id": "core-labeling",

@@ -19,7 +19,7 @@ Use it to help read statuses. Do not use it to confirm accessibility or critical
 ## Install the packaged build
 
 1. Run `npm install && npm run build` or download the ZIP from the landing page.
-2. Unzip the content-addressed `dist/site/downloads/color-status-labeler-chrome-<digest>.zip` file.
+2. Unzip the downloaded extension ZIP file.
 3. Open `chrome://extensions` (or `edge://extensions`).
 4. Turn on Developer mode, choose **Load unpacked**, and select the unzipped folder.
 5. Open a dashboard, select the extension, and choose **Pick a status color**.
@@ -57,15 +57,17 @@ npm run build        # extension ZIP + static site in dist/site/
 
 - `.output/chrome-mv3/`: unpacked Manifest V3 extension.
 - `dist/site/`: deployable static site; `index.html` is at this exact root.
-- `dist/site/downloads/color-status-labeler-chrome-<digest>.zip`: packaged extension linked by the site. The digest changes with the package so returning users cannot receive an old release from cache.
+- `dist/site/downloads/color-status-labeler-chrome-<digest>.zip`: packaged extension linked by the site.
 
-Deploy only `dist/site/`. Its host configuration preserves the extension download, offline worker, real page routes, and designed 404. It marks versioned downloads and code for one-year caching. Infrastructure, DNS, and billing are outside this repository.
+Each package gets a new download URL, so browsers do not reuse an older package.
+
+Deploy only `dist/site/`. The deployed site keeps the download, offline guide, page URLs, and custom not-found page working. It caches versioned downloads and code for one year. Infrastructure, DNS, and billing are outside this repository.
 
 ## Architecture and privacy
 
 - WXT + TypeScript, Manifest V3, no UI framework.
 - Vite + vanilla TypeScript for the static site.
-- Permissions: `storage` for local rules and `activeTab` for starting the picker from the popup. A content script runs on HTTP(S) pages to read computed colors and render isolated Shadow DOM overlays.
+- Permissions: `storage` for local rules and `activeTab` for starting the picker from the popup. The extension reads visible colors on the current web page. It adds labels without changing page controls.
 - No account, analytics, cookies, remote APIs, third-party runtime scripts, or downloaded fonts.
 - See [privacy](site/privacy/index.html), [terms](site/terms/index.html), the [visual system](.factory/design.md), [.factory/demo.md](.factory/demo.md), and the [handoff](.factory/handoff.md).
 

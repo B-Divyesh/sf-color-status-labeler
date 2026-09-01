@@ -1,6 +1,6 @@
 # Color Status Labeler copy audit
 
-Audited 2026-09-01 UTC after polish round 2. Every visible landing-page
+Audited 2026-09-01 UTC after polish round 3. Every visible landing-page
 sentence, heading, navigation label, and action is below the 22-word limit.
 No banned plain-words term appears. Claim-like copy maps to
 `.factory/claims.json`.
@@ -38,27 +38,28 @@ No banned plain-words term appears. Claim-like copy maps to
 | Your rules return on that site. | 6 | Pass |
 | How labels stay readable and local. | 7 | Pass |
 | Use more than color. | 4 | Pass |
-| Every trained status gets text and a distinct graphic pattern. | 10 | Pass |
+| Every labeled status gets text and a distinct graphic pattern. | 10 | Pass; `core-labeling` |
 | The legend stays useful in grayscale. | 7 | Pass |
 | Keep rules on your device. | 5 | Pass |
 | No account or analytics. | 4 | Pass |
 | Rules stay in local extension storage. | 6 | Pass |
 | Does not change page controls. | 5 | Pass |
 | Badges cannot receive clicks. | 4 | Pass |
-| Forms, links, and the data behind your page are never changed. | 11 | Pass |
+| It does not read passwords, submit forms, or change page controls. | 11 | Pass; `page-unchanged` |
 | Color-matching limits. | 2 | Pass |
 | Limits of color matching. | 5 | Pass |
 | A saved label follows nearby solid colors. | 7 | Pass |
 | Gradients and larger color changes are not matched. | 8 | Pass |
 | Check each label after a site changes. | 7 | Pass |
-| Confirm important status in the source system. | 7 | Pass |
-| It does not certify accessibility, inspect hidden business data, or modify server records. | 13 | Pass |
+| Confirm important status on the original dashboard or map. | 9 | Safety instruction |
+| Use it to help read statuses. | 6 | Safety instruction |
+| Do not use it to confirm accessibility or critical decisions. | 10 | Safety instruction |
 | Install in your browser. | 4 | Pass |
 | Add readable labels to your statuses. | 6 | Pass |
 | Download the extension. | 3 | Pass |
 | Unzip the download, then load the folder in Chrome’s Extensions page. | 11 | Pass |
-| A local utility for readable color status. | 7 | Pass |
-| Hero artwork was generated for this product with Azure AI Foundry. | 11 | Pass |
+| Adds words and patterns to color-only dashboard statuses. | 8 | `core-labeling` |
+| Hero artwork was generated for this product with Azure AI Foundry. | 11 | `release-identity` |
 | No third-party runtime assets or tracking scripts. | 7 | Pass |
 
 ## Terminology
@@ -89,7 +90,11 @@ exceeds 22 words, and the review-specific revisions are:
 | Check and retrain each label after a site changes. | 9 | Pass |
 | Use it to help read statuses. | 6 | Pass |
 | Do not use it to confirm accessibility or critical decisions. | 10 | Pass |
-| Its host configuration preserves the extension download, offline worker, real page routes, and designed 404. | 15 | Pass; `static-build-output` |
-| It marks versioned downloads and code for one-year caching. | 9 | Pass; `static-build-output` |
+| Unzip the downloaded extension ZIP file. | 6 | Pass; `download-extension` |
+| Each package gets a new download URL, so browsers do not reuse an older package. | 15 | Pass; `cache-freshness` |
+| The deployed site keeps the download, offline guide, page URLs, and custom not-found page working. | 16 | Pass; `static-build-output` |
+| It caches versioned downloads and code for one year. | 10 | Pass; `static-build-output` |
+| The extension reads visible colors on the current web page. | 10 | Pass; `picker-style-properties` |
+| It adds labels without changing page controls. | 7 | Pass; `page-unchanged` |
 
-All 21 manifest IDs occur exactly once as `@claim:<id>` tags in `tests/`.
+All 22 manifest IDs occur exactly once as `@claim:<id>` tags in `tests/`.

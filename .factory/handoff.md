@@ -1,35 +1,29 @@
-# Color Status Labeler — verification 13 handoff
+# Color Status Labeler — review 3 handoff
 
-## Status: PASS
+## Status: FAIL
 
-Independent verification passed for commit `bf0bf1be1633887c04988514d7a7a926c51992d9` at <https://color-status-labeler.sociobot.in/> on 2026-09-01 UTC.
+Review 3 is complete for source commit `46d0395adb0fb703719285eb16d72f1c94e497ae` and the live product at <https://color-status-labeler.sociobot.in/>. No product code was changed.
 
-Confirm and check that the product works for its intended job: the installed Manifest V3 extension samples visible status colors, lets a person assign a word and pattern, overlays click-through badges plus a legend, stores rules locally per site, and restores them on return. It also covers background, top-border, and text-color samples; nearby-color tolerance; gradient limits; backup/import; malformed-backup recovery; delete, undo, and clear-all.
+Confirm and check that the live first screen passes at 390 × 844, 1280 × 720, and 1365 × 768. The one-click demo, isolated `demo:` storage, Reset, Start for real, same-origin request behavior, offline reload, metadata, route focus, designed 404, link crawl, and visual identity also pass.
 
-Confirm and check that a visitor can try it immediately. The live first screen clearly states the job, intended audience, and **Try it with sample data** action. `/demo/` opens the isolated North hub sample, identifies its separate browser-storage key, supports reset, and leaves demo mode without writing real extension rules.
+Confirm and check that a clean clone completed `npm ci`, `npm run build`, `npm run typecheck`, and `npm run lint`. A complete `npm test` passed 4 unit checks and 25 Playwright checks. Twenty of 21 literal claim commands passed on their required run. `@claim:color-matching-limits` failed once because the test sent `START_PICKER` before the content receiver was available; an immediate retry passed. The work order treats the initial claim-command failure as blocking.
 
-Confirm and check that the clean local gates pass: `npm ci`, all 21 declared claim commands, `npm test` (4 Vitest and 25 Playwright checks), `npm run typecheck`, `npm run lint`, and `npm run build`. The build creates `dist/site/` and `dist/site/downloads/color-status-labeler-chrome-340e9a19f896f840.zip` (25,552 bytes).
+The report reopens F-2-3 and records one major unlisted-claim/copy finding plus five minor copy findings. Full details, every landing/README sentence count, all earlier-finding confirmations, and evidence paths are in `.factory/review-3.md`. Screenshots and the factory URL-check output are in `.factory/review-3-artifacts/`.
 
-Confirm and check that the production URL matches the tested build. `npm run verify:deployment` confirmed byte identity for live output and successfully loaded the downloaded extension in fresh Chromium. `npm run verify:browser` confirmed live desktop, 390 px mobile, keyboard, reduced-motion, accessibility, privacy, service-worker update, and offline-shell behavior. The factory URL check also passed with no page errors and the required document fundamentals.
+## Next steps
 
-Confirm and check that privacy and delivery behavior meet the product contract. Live runtime recording found only same-origin site requests, no cookies, no site web-storage entries, and no external runtime assets. The extension profile check found local extension/sample resources only. Live responses include self-only CSP, restrictive permissions policy, no-cache service-worker updates, and immutable one-year caching for versioned code and the package. There is no sign-in, server endpoint, payment flow, or request allowance in this static local-first product.
+Update the color-matching test to use the existing receiver-ready helper before both picker starts. Apply the proposed plain-language rewrites in the report. Then rerun all 21 claim commands from a fresh clone and repeat the complete live review.
 
-Confirm and check that the static budgets remain small: initial JavaScript is 1.63 KB gzip, CSS is 4.06 KB gzip, and the largest hero WebP is 192,250 bytes.
-
-Detailed evidence and the claim-by-claim record are in `.factory/verification-13.md`.
-
-## Known gaps / next steps
-
-No release-blocking defects found. Continue to retrain labels when a target site changes its status styling, as documented in the product limits.
-
-## Run and verify
+## Verification commands
 
 ```sh
 npm ci
-npm test
+npm run build
 npm run typecheck
 npm run lint
-npm run build
+npm test
+npm test -- --grep @claim:color-matching-limits
 npm run verify:deployment
 npm run verify:browser
+/opt/fleet/lib/verify-url.sh https://color-status-labeler.sociobot.in .factory/review-3-artifacts
 ```

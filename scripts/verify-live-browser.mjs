@@ -40,6 +40,22 @@ try {
   await page.goto(base.href, { waitUntil: 'networkidle' });
   check((await page.locator('.hero').textContent())?.includes('people with color-vision deficiency'), 'first screen does not name people with color-vision deficiency.');
   check(await page.getByRole('link', { name: /Try it with sample data/ }).count() === 1, 'first screen has no Try it with sample data action.');
+  for (const viewport of [{ width: 1365, height: 768 }, { width: 1280, height: 720 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto(base.href, { waitUntil: 'networkidle' });
+    for (const [target, name] of [
+      [page.getByRole('link', { name: /Try it with sample data/ }), 'sample-data action'],
+      [page.locator('.action-note'), 'sample outcome note']
+    ]) {
+      const box = await target.boundingBox();
+      check(Boolean(box && box.y >= 0 && box.y + box.height <= viewport.height), `${name} is outside the cold ${viewport.width}x${viewport.height} viewport.`);
+    }
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(base.href, { waitUntil: 'networkidle' });
+  check(await page.getByRole('link', { name: 'Color-matching limits' }).count() === 1, 'the limits navigation label is vague or missing.');
+  check(await page.getByRole('heading', { name: 'How labels stay readable and local' }).count() === 1, 'the feature section heading is vague or missing.');
+  check(await page.getByRole('heading', { name: 'Does not change page controls' }).count() === 1, 'the page-control heading is vague or missing.');
   await page.keyboard.press('Tab');
   check(await page.locator('.skip-link').evaluate((element) => element === document.activeElement), 'keyboard Tab did not reach the skip link first.');
   const toggle = page.getByRole('switch', { name: 'Show labels' });

@@ -1,1 +1,1 @@
-Label color-only dashboard statuses with readable words and patterns.
+Add readable words and patterns to color-only dashboard statuses.

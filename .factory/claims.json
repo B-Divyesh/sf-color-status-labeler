@@ -7,6 +7,13 @@
     "sandbox": "fresh browser context; assert the first screen names the audience and exposes the sample-data action"
   },
   {
+    "id": "first-screen-demo",
+    "claim": "The sample-data action and its outcome are visible without scrolling at 1365 × 768 and 1280 × 720.",
+    "where": "landing first screen",
+    "test": "npm test -- --grep @claim:first-screen-demo",
+    "sandbox": "fresh browser page at both laptop viewports; measure the action and outcome note against the initial viewport"
+  },
+  {
     "id": "demo-sandbox",
     "claim": "Try the sample dispatch board without saving changes as real extension rules.",
     "where": "landing primary action and /demo banner",
@@ -26,6 +33,13 @@
     "where": "README build outputs",
     "test": "npm test -- --grep @claim:cache-freshness",
     "sandbox": "fresh browser context; wait for the site worker, seed a stale package at the former fixed download path, then fetch the current content-addressed URL and assert it returns the ZIP"
+  },
+  {
+    "id": "static-build-output",
+    "claim": "The deployable site keeps the extension download and offline worker outside page routing and marks versioned downloads and code for one-year caching.",
+    "where": "README build outputs",
+    "test": "npm test -- --grep @claim:static-build-output",
+    "sandbox": "fresh production build; inspect the shipped static host configuration and request the built home and service worker"
   },
   {
     "id": "free-download",
@@ -82,6 +96,20 @@
     "where": "landing, demo, README, and extension package",
     "test": "npm test -- --grep @claim:core-labeling",
     "sandbox": "fresh Chromium extension profile on /demo; train the green sample status and observe its badge and legend"
+  },
+  {
+    "id": "picker-style-properties",
+    "claim": "The picker can label a page’s visible background, top-border, or text color.",
+    "where": "README What it does and extension picker",
+    "test": "npm test -- --grep @claim:picker-style-properties",
+    "sandbox": "fresh Chromium extension profile; train dedicated background, top-border, and text-color fixtures, observe each badge, and inspect all saved properties"
+  },
+  {
+    "id": "color-matching-limits",
+    "claim": "A saved label follows nearby solid colors, but not gradients or larger color changes.",
+    "where": "landing limits, README, terms, and extension picker warning",
+    "test": "npm test -- --grep @claim:color-matching-limits",
+    "sandbox": "fresh Chromium extension profile; train a solid color, verify a nearby color remains labeled, verify a larger change removes its badge, and confirm a gradient is not offered as a background sample"
   },
   {
     "id": "grayscale-legibility",

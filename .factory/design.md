@@ -28,6 +28,11 @@ Two system stacks avoid font downloads and keep the extension tiny. Headings use
 
 An 8px base rhythm with 4px for optical nudges. Primary gaps: 8, 16, 24, 32, 48, 64px. Content measures at 72ch. Corners are 2px or clipped with `clip-path`, never soft SaaS pills. Borders are 2px ink; shadows offset 4px with no blur, like layered paper. Touch targets are at least 44px.
 
+At laptop widths, the first screen uses a wider copy track and a 74px maximum
+headline. Its sample action, outcome note, and three facts remain visible at
+1280 × 720. Phones stack the actions and artwork while keeping the same bold
+cassette-label hierarchy.
+
 ## Interaction grammar
 
 - Primary actions resemble a labeled cassette eject key: solid blue, ink offset shadow, 2px press travel.

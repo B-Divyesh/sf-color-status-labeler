@@ -92,7 +92,7 @@ test('@claim:core-labeling @claim:local-rules @claim:click-through @claim:rules-
     expect(contrastRatio(dialogFocus.outline, dialogFocus.background)).toBeGreaterThanOrEqual(3);
     await host.getByLabel('Status label').fill('   ');
     await host.getByRole('button', { name: 'Save label' }).click();
-    await expect(host.getByRole('alert')).toHaveText('Enter a status label; spaces alone cannot name a signal.');
+    await expect(host.getByRole('alert')).toHaveText('Enter a status label; spaces alone cannot name a status.');
     await expect(host.getByLabel('Status label')).toHaveAttribute('aria-invalid', 'true');
     await host.getByLabel('Status label').fill('Ready');
     await expect(host.getByRole('alert')).toBeEmpty();
@@ -163,6 +163,116 @@ test('@claim:core-labeling @claim:local-rules @claim:click-through @claim:rules-
     expect(privacyBox!.height).toBeGreaterThanOrEqual(44);
     const results = await new AxeBuilder({ page: popup }).analyze();
     expect(results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
+  } finally {
+    await context.close();
+    rmSync(extensionPath, { recursive: true, force: true });
+  }
+});
+
+test('@claim:picker-style-properties picker labels visible background, top-border, and text colors', async () => {
+  const extensionPath = mkdtempSync(resolve(tmpdir(), 'color-status-labeler-properties-'));
+  execFileSync('unzip', ['-q', extensionArchive(), '-d', extensionPath]);
+  const context = await chromium.launchPersistentContext('', {
+    channel: 'chromium',
+    headless: true,
+    args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`]
+  });
+  try {
+    let [worker] = context.serviceWorkers();
+    worker ??= await context.waitForEvent('serviceworker');
+    const page = await context.newPage();
+    await page.goto('/demo/');
+    const origin = new URL(page.url()).origin;
+    await page.evaluate(() => {
+      const fixture = document.createElement('section');
+      fixture.id = 'property-fixture';
+      fixture.innerHTML = `
+        <button id="sample-background" style="background:#1252a0;border:0;color:#fff">Background sample</button>
+        <button id="sample-border" style="background:transparent;border:0;border-top:8px solid #a83b32;color:#111">Border sample</button>
+        <button id="sample-text" style="background:transparent;border:0;color:#28613d">Text sample</button>`;
+      document.body.append(fixture);
+    });
+    const host = page.locator('#color-status-labeler-root');
+    const cases = [
+      { selector: '#sample-background', option: 'backgroundColor', label: 'Background status' },
+      { selector: '#sample-border', option: 'borderTopColor', label: 'Border status' },
+      { selector: '#sample-text', option: 'color', label: 'Text status' }
+    ] as const;
+
+    for (const sample of cases) {
+      await worker.evaluate(async () => {
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (!tab.id) throw new Error('No active tab');
+        await chrome.tabs.sendMessage(tab.id, { type: 'START_PICKER' });
+      });
+      await page.locator(sample.selector).click();
+      await expect(host.getByRole('dialog')).toBeVisible();
+      await host.locator('#csl-color').selectOption(sample.option);
+      await host.getByLabel('Status label').fill(sample.label);
+      await host.getByRole('button', { name: 'Save label' }).click();
+      await expect(host.locator('.badge').filter({ hasText: sample.label })).toHaveCount(1);
+    }
+
+    const saved = await worker.evaluate(async (testedOrigin) => {
+      const key = `color-status-labeler:${testedOrigin}`;
+      return (await chrome.storage.local.get(key))[key];
+    }, origin) as { rules: StoredRule[] };
+    expect(saved.rules.map(({ label, property }) => ({ label, property }))).toEqual([
+      { label: 'Background status', property: 'backgroundColor' },
+      { label: 'Border status', property: 'borderTopColor' },
+      { label: 'Text status', property: 'color' }
+    ]);
+  } finally {
+    await context.close();
+    rmSync(extensionPath, { recursive: true, force: true });
+  }
+});
+
+test('@claim:color-matching-limits labels follow nearby solid colors but not gradients or larger color changes', async () => {
+  const extensionPath = mkdtempSync(resolve(tmpdir(), 'color-status-labeler-limits-'));
+  execFileSync('unzip', ['-q', extensionArchive(), '-d', extensionPath]);
+  const context = await chromium.launchPersistentContext('', {
+    channel: 'chromium',
+    headless: true,
+    args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`]
+  });
+  try {
+    let [worker] = context.serviceWorkers();
+    worker ??= await context.waitForEvent('serviceworker');
+    const page = await context.newPage();
+    await page.goto('/demo/');
+    await page.evaluate(() => {
+      const fixture = document.createElement('section');
+      fixture.innerHTML = `
+        <button id="changing-color" style="background:#1252a0;border:0;color:#fff">Changing color</button>
+        <button id="gradient-color" style="background-color:transparent;background-image:linear-gradient(90deg,#1252a0,#a83b32);border:0;color:#111">Gradient color</button>`;
+      document.body.append(fixture);
+    });
+    const host = page.locator('#color-status-labeler-root');
+    const startPicker = async () => worker.evaluate(async () => {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab.id) throw new Error('No active tab');
+      await chrome.tabs.sendMessage(tab.id, { type: 'START_PICKER' });
+    });
+
+    await startPicker();
+    await page.locator('#changing-color').click();
+    await host.locator('#csl-color').selectOption('backgroundColor');
+    await host.getByLabel('Status label').fill('Changing status');
+    await host.getByRole('button', { name: 'Save label' }).click();
+    const matchingBadge = host.locator('.badge').filter({ hasText: 'Changing status' });
+    await expect(matchingBadge).toHaveCount(1);
+
+    await page.locator('#changing-color').evaluate((element: HTMLElement) => { element.style.backgroundColor = '#1554a2'; });
+    await expect(matchingBadge).toHaveCount(1);
+    await page.locator('#changing-color').evaluate((element: HTMLElement) => { element.style.backgroundColor = '#87211a'; });
+    await expect(matchingBadge).toHaveCount(0);
+
+    await startPicker();
+    await page.locator('#gradient-color').click();
+    const options = await host.locator('#csl-color option').allTextContents();
+    expect(options.some((option) => option.startsWith('Background'))).toBe(false);
+    await host.getByRole('button', { name: 'Cancel' }).click();
   } finally {
     await context.close();
     rmSync(extensionPath, { recursive: true, force: true });

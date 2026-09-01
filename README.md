@@ -6,13 +6,15 @@ The companion site is designed for `https://color-status-labeler.sociobot.in`.
 
 ## What it does
 
-- Samples a page’s visible background, border, or text color.
+- Samples a page’s visible background, top border, or text color.
 - Lets the user assign a plain-language label and one of four distinct patterns.
 - Finds matching statuses and adds badges that do not block clicks and a legend.
 - Restores saved rules when you return to the same site.
 - Stores per-site rules only in `chrome.storage.local`.
 
-Color matching is approximate. Themes, gradients, animations, and site redesigns can cause missed or incorrect labels. This is an operating aid, not a WCAG audit or a source of truth for safety-critical decisions.
+A saved label follows nearby solid colors. Gradients and larger color changes are not matched. Check and retrain each label after a site changes.
+
+Use it to help read statuses. Do not use it to confirm accessibility or critical decisions.
 
 ## Install the packaged build
 
@@ -57,7 +59,7 @@ npm run build        # extension ZIP + static site in dist/site/
 - `dist/site/`: deployable static site; `index.html` is at this exact root.
 - `dist/site/downloads/color-status-labeler-chrome-<digest>.zip`: packaged extension linked by the site. The digest changes with the package so returning users cannot receive an old release from cache.
 
-Deploy only `dist/site/`. `staticwebapp.config.json` keeps the extension ZIP and service worker reachable. It caches versioned downloads and code for a year. It rechecks fixed artwork and HTML. Infrastructure, DNS, and billing are outside this repository.
+Deploy only `dist/site/`. Its host configuration keeps the extension download and offline worker outside page routing. It marks versioned downloads and code for one-year caching. Infrastructure, DNS, and billing are outside this repository.
 
 ## Architecture and privacy
 

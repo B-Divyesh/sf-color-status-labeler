@@ -64,7 +64,27 @@ test('@claim:color-vision-audience landing page names the intended user and demo
   expect(results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
 });
 
-test('@claim:free-download demo links to the extension ZIP without a payment step and declares its response policy', async ({ page }) => {
+test('@claim:first-screen-demo sample action and outcome fit common cold laptop viewports', async ({ page }) => {
+  for (const viewport of [
+    { width: 1365, height: 768 },
+    { width: 1280, height: 720 }
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/');
+    const action = page.getByRole('link', { name: /Try it with sample data/ });
+    const outcome = page.locator('.action-note');
+    await expect(action).toBeVisible();
+    await expect(outcome).toHaveText('Open a sample dispatch board. Change labels without changing your own rules.');
+    for (const target of [action, outcome]) {
+      const box = await target.boundingBox();
+      expect(box, `${viewport.width}x${viewport.height} first-screen element must render`).not.toBeNull();
+      expect(box!.y).toBeGreaterThanOrEqual(0);
+      expect(box!.y + box!.height).toBeLessThanOrEqual(viewport.height);
+    }
+  }
+});
+
+test('@claim:free-download demo links to the extension ZIP without a payment step', async ({ page }) => {
   await page.goto('/demo/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Read sample statuses');
   const archivePath = await page.locator('a[download]').first().getAttribute('href');
@@ -74,7 +94,10 @@ test('@claim:free-download demo links to the extension ZIP without a payment ste
   expect(response.headers()['content-type']).toMatch(/zip|octet-stream/);
   const archive = await response.body();
   expect(archive.subarray(0, 4).toString('ascii')).toBe('PK\x03\x04');
+  await expect(page.getByRole('textbox', { name: /card|billing|payment|account/i })).toHaveCount(0);
+});
 
+test('@claim:static-build-output the deployable site preserves downloads, routing, and cache policy', async ({ page }) => {
   const policy = await page.request.get('/staticwebapp.config.json');
   const config = await policy.json() as { navigationFallback: { exclude: string[] }; globalHeaders: Record<string, string>; responseOverrides: Record<string, { rewrite: string; statusCode: number }>; routes: Array<{ route: string; rewrite?: string; headers: Record<string, string> }> };
   expect(config.navigationFallback.exclude).toEqual(expect.arrayContaining(['/downloads/*', '/sw.js', '/404']));
@@ -90,6 +113,13 @@ test('@claim:free-download demo links to the extension ZIP without a payment ste
   ]));
   expect(config.routes.some((route) => route.route === '/downloads/color-status-labeler-chrome.zip')).toBe(false);
   expect(config.routes.some((route) => route.rewrite?.includes('color-status-labeler-chrome.bin'))).toBe(false);
+  const home = await page.request.get('/');
+  const worker = await page.request.get('/sw.js');
+  expect(home.ok()).toBe(true);
+  expect(worker.ok()).toBe(true);
+});
+
+test('the designed not-found page is reachable', async ({ page }) => {
   await page.goto('/404.html');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('This page is not here.');
 });

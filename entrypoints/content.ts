@@ -153,7 +153,7 @@ export default defineContentScript({
       legend.setAttribute('aria-label', 'Status label legend');
       const head = document.createElement('div');
       head.className = 'legend-head';
-      head.innerHTML = '<span>Status tape</span><span aria-hidden="true">A / LIVE</span>';
+      head.innerHTML = '<span>Status labels</span><span aria-hidden="true">On this page</span>';
       const list = document.createElement('ul');
       for (const rule of activeRules) {
         const item = document.createElement('li');
@@ -275,7 +275,7 @@ export default defineContentScript({
       dialog.setAttribute('role', 'dialog');
       dialog.setAttribute('aria-modal', 'true');
       dialog.setAttribute('aria-labelledby', 'csl-dialog-title');
-      dialog.innerHTML = `<h2 id="csl-dialog-title">Name this signal</h2><p>Add meaning that survives the hue. You can change it later by deleting and picking again.</p>`;
+      dialog.innerHTML = `<h2 id="csl-dialog-title">Name this status</h2><p>Add a word and pattern. To change it later, delete this label and pick the status again.</p>`;
       const form = document.createElement('form');
       const nameLabel = document.createElement('label');
       nameLabel.htmlFor = 'csl-label';
@@ -297,7 +297,7 @@ export default defineContentScript({
       propertyLabel.textContent = 'Sampled color';
       const property = document.createElement('select');
       property.id = 'csl-color';
-      const labels: Record<ColorProperty, string> = { backgroundColor: 'Background', borderTopColor: 'Border', color: 'Text', fill: 'Shape fill', stroke: 'Shape outline' };
+      const labels: Record<ColorProperty, string> = { backgroundColor: 'Background', borderTopColor: 'Top border', color: 'Text', fill: 'Shape fill', stroke: 'Shape outline' };
       for (const item of available) {
         const option = document.createElement('option');
         option.value = item.property;
@@ -339,7 +339,7 @@ export default defineContentScript({
       actions.append(save, cancel);
       const warning = document.createElement('p');
       warning.className = 'warning';
-      warning.textContent = 'Pixel matching can miss or mislabel items after a site redesign. Check the legend when the page changes.';
+      warning.textContent = 'Large color changes and gradients are not matched. Check labels after the site changes.';
       form.append(nameLabel, name, labelError, propertyLabel, property, fields, actions, warning);
       dialog.append(form);
       backdrop.append(dialog);
@@ -371,7 +371,7 @@ export default defineContentScript({
         const rule: StatusRule = { id: crypto.randomUUID(), label: name.value.trim(), color: selected.color, property: selected.property, pattern, tolerance: 10, enabled: true, createdAt: Date.now() };
         if (!rule.label) {
           name.setAttribute('aria-invalid', 'true');
-          labelError.textContent = 'Enter a status label; spaces alone cannot name a signal.';
+          labelError.textContent = 'Enter a status label; spaces alone cannot name a status.';
           name.focus();
           return;
         }

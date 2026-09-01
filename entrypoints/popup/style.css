@@ -14,7 +14,6 @@ button, summary, label { -webkit-tap-highlight-color: transparent; }
 .skip-link:focus { transform: none; }
 .masthead { position: relative; padding: 20px 20px 18px; color: #f6f0de; background: #171512; overflow: hidden; }
 .masthead::after { content: ""; position: absolute; inset: auto -20px 10px 46%; height: 34px; opacity: .42; background: repeating-linear-gradient(90deg, #f2c94c 0 7px, transparent 7px 13px); transform: rotate(-3deg); }
-.track-mark { display: block; margin-bottom: 8px; color: #f2c94c; font-size: 12px; letter-spacing: .14em; }
 h1, h2, p { margin-top: 0; }
 h1 { position: relative; z-index: 1; margin-bottom: 10px; font-family: "Arial Black", "Helvetica Neue", sans-serif; font-size: 29px; line-height: .92; letter-spacing: -.04em; text-transform: uppercase; }
 h2 { margin-bottom: 0; font-family: "Arial Black", "Helvetica Neue", sans-serif; font-size: 17px; text-transform: uppercase; }

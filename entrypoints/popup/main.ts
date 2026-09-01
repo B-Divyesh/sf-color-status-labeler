@@ -25,6 +25,20 @@ function announce(message: string, error = false) {
   status.style.color = error ? '#8A2922' : '#28613D';
 }
 
+async function waitForContentReceiver(tabId: number) {
+  const deadline = Date.now() + 3_000;
+  while (Date.now() < deadline) {
+    try {
+      const response = await browser.tabs.sendMessage(tabId, { type: 'CONTENT_RECEIVER_READY' }) as { ready?: boolean } | undefined;
+      if (response?.ready) return;
+    } catch {
+      // The tab can still be loading its document_idle content script.
+    }
+    await new Promise<void>((resolve) => window.setTimeout(resolve, 100));
+  }
+  throw new Error('The page did not finish loading the status label picker.');
+}
+
 function patternCss(pattern: Pattern): string {
   if (pattern === 'dots') return 'radial-gradient(#171512 1.5px, transparent 1.5px)';
   if (pattern === 'crosshatch') return 'repeating-linear-gradient(45deg, transparent 0 5px, #171512 5px 7px), repeating-linear-gradient(-45deg, transparent 0 5px, #171512 5px 7px)';
@@ -106,6 +120,7 @@ pickButton.addEventListener('click', async () => {
   if (!activeTabId) return;
   pickButton.disabled = true;
   try {
+    await waitForContentReceiver(activeTabId);
     await browser.tabs.sendMessage(activeTabId, { type: 'START_PICKER' });
     window.close();
   } catch {

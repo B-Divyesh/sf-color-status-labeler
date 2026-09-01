@@ -261,6 +261,22 @@ test('@claim:demo-sandbox the sample is one click, isolated, resettable, and lea
   await expect(page.getByRole('button', { name: 'Reset demo' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Start for real' })).toBeVisible();
 
+  for (const viewport of [
+    { width: 1365, height: 768 },
+    { width: 390, height: 844 }
+  ]) {
+    await page.setViewportSize(viewport);
+    const sampleBoard = page.locator('.demo-dashboard');
+    const firstStatus = page.locator('[data-demo-status="ready"]');
+    for (const target of [sampleBoard, firstStatus]) {
+      const box = await target.boundingBox();
+      expect(box, `${viewport.width}x${viewport.height} sample product must render`).not.toBeNull();
+      expect(box!.y).toBeGreaterThanOrEqual(0);
+      expect(box!.y).toBeLessThan(viewport.height);
+    }
+  }
+  await page.setViewportSize({ width: 1280, height: 720 });
+
   await page.getByLabel('Sample status', { exact: true }).selectOption('waiting');
   await page.getByLabel('Status label', { exact: true }).fill('Queued');
   await page.getByRole('radio', { name: 'Bars' }).check();

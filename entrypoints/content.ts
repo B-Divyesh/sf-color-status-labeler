@@ -389,7 +389,11 @@ export default defineContentScript({
       name.focus();
     }
 
-    browser.runtime.onMessage.addListener((message: { type?: string }) => {
+    browser.runtime.onMessage.addListener((message: { type?: string }, _sender, sendResponse) => {
+      if (message.type === 'CONTENT_RECEIVER_READY') {
+        sendResponse({ ready: true });
+        return;
+      }
       if (message.type === 'START_PICKER') beginPicker();
       if (message.type === 'REFRESH_LABELS') scheduleRefresh();
     });

@@ -18,7 +18,7 @@
     "claim": "Try the sample dispatch board without saving changes as real extension rules.",
     "where": "landing primary action and /demo banner",
     "test": "npm test -- --grep @claim:demo-sandbox",
-    "sandbox": "fresh browser context; modify sample data, assert only the demo: storage key exists, reset it, then leave demo mode"
+    "sandbox": "fresh browser context at desktop and 390 px; assert the sample board is already visible, modify sample data, assert only the demo: storage key exists, reset it, then leave demo mode"
   },
   {
     "id": "download-extension",

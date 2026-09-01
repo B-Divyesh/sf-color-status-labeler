@@ -26,15 +26,43 @@ function seededRule(id: string, label: string, color = '#4A985C'): StoredRule {
   return { id, label, color, property: 'backgroundColor', pattern: 'stripes', tolerance: 10, enabled: true, createdAt: 1 };
 }
 
-async function openPopupForOrigin(context: import('@playwright/test').BrowserContext, extensionId: string, origin: string) {
+async function openPopupForOrigin(context: import('@playwright/test').BrowserContext, extensionId: string, origin: string, tabId = 1) {
   const popup = await context.newPage();
-  await popup.addInitScript((testedOrigin) => {
+  await popup.addInitScript(({ testedOrigin, testedTabId }) => {
     const tabs = chrome.tabs as unknown as { query: () => Promise<Array<{ id: number; url: string }>> };
-    tabs.query = async () => [{ id: 1, url: testedOrigin }];
-  }, origin);
+    tabs.query = async () => [{ id: testedTabId, url: testedOrigin }];
+  }, { testedOrigin: origin, testedTabId: tabId });
   await popup.goto(`chrome-extension://${extensionId}/popup.html`);
   await expect(popup.locator('#controls')).toBeVisible();
   return popup;
+}
+
+async function contentTabId(worker: import('@playwright/test').Worker, origin: string) {
+  const tabId = await worker.evaluate(async () => {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    return tab?.id;
+  });
+  if (!tabId) throw new Error(`No extension tab exists for ${origin}.`);
+  return tabId;
+}
+
+async function waitForContentReceiver(worker: import('@playwright/test').Worker, origin: string) {
+  const tabId = await contentTabId(worker, origin);
+  await expect.poll(async () => worker.evaluate(async (testedTabId) => {
+    try {
+      return await chrome.tabs.sendMessage(testedTabId, { type: 'CONTENT_RECEIVER_READY' });
+    } catch {
+      return null;
+    }
+  }, tabId)).toEqual({ ready: true });
+  return tabId;
+}
+
+async function startPickerAfterReceiverReady(worker: import('@playwright/test').Worker, origin: string) {
+  const tabId = await waitForContentReceiver(worker, origin);
+  await worker.evaluate(async (testedTabId) => {
+    await chrome.tabs.sendMessage(testedTabId, { type: 'START_PICKER' });
+  }, tabId);
 }
 
 function contrastRatio(first: string, second: string) {
@@ -193,6 +221,7 @@ test('@claim:picker-style-properties picker labels visible background, top-borde
       document.body.append(fixture);
     });
     const host = page.locator('#color-status-labeler-root');
+    const statusLabelInput = host.locator('input#csl-label');
     const cases = [
       { selector: '#sample-background', option: 'backgroundColor', label: 'Background status' },
       { selector: '#sample-border', option: 'borderTopColor', label: 'Border status' },
@@ -200,15 +229,11 @@ test('@claim:picker-style-properties picker labels visible background, top-borde
     ] as const;
 
     for (const sample of cases) {
-      await worker.evaluate(async () => {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        if (!tab.id) throw new Error('No active tab');
-        await chrome.tabs.sendMessage(tab.id, { type: 'START_PICKER' });
-      });
+      await startPickerAfterReceiverReady(worker, origin);
       await page.locator(sample.selector).click();
       await expect(host.getByRole('dialog')).toBeVisible();
       await host.locator('#csl-color').selectOption(sample.option);
-      await host.getByLabel('Status label').fill(sample.label);
+      await statusLabelInput.fill(sample.label);
       await host.getByRole('button', { name: 'Save label' }).click();
       await expect(host.locator('.badge').filter({ hasText: sample.label })).toHaveCount(1);
     }
@@ -222,6 +247,30 @@ test('@claim:picker-style-properties picker labels visible background, top-borde
       { label: 'Border status', property: 'borderTopColor' },
       { label: 'Text status', property: 'color' }
     ]);
+  } finally {
+    await context.close();
+    rmSync(extensionPath, { recursive: true, force: true });
+  }
+});
+
+test('the popup waits for the content receiver before starting the picker', async () => {
+  const extensionPath = mkdtempSync(resolve(tmpdir(), 'color-status-labeler-picker-ready-'));
+  execFileSync('unzip', ['-q', extensionArchive(), '-d', extensionPath]);
+  const context = await chromium.launchPersistentContext('', {
+    channel: 'chromium',
+    headless: true,
+    args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`]
+  });
+  try {
+    let [worker] = context.serviceWorkers();
+    worker ??= await context.waitForEvent('serviceworker');
+    const page = await context.newPage();
+    await page.goto('/demo/');
+    const origin = new URL(page.url()).origin;
+    const tabId = await waitForContentReceiver(worker, origin);
+    const popup = await openPopupForOrigin(context, new URL(worker.url()).host, origin, tabId);
+    await popup.getByRole('button', { name: 'Pick a status color' }).click();
+    await expect(page.locator('#color-status-labeler-root').locator('.picker-bar')).toContainText('Click a colored status');
   } finally {
     await context.close();
     rmSync(extensionPath, { recursive: true, force: true });
@@ -396,6 +445,9 @@ test('@claim:rule-deletion popup deletes one learned label and clears a site onl
     await clearConfirmation;
     await expect(popup.locator('#status')).toHaveText('Cleared 2 labels.');
     await expect(popup.getByRole('list', { name: 'Learned status labels' })).toBeEmpty();
+    await expect(popup.locator('#empty')).toContainText('No labels saved yet.');
+    await expect(popup.locator('body')).not.toContainText('A / 01');
+    await expect(popup.locator('body')).not.toContainText('No tracks labeled yet.');
     const saved = await worker.evaluate(async (testedOrigin) => (await chrome.storage.local.get(`color-status-labeler:${testedOrigin}`))[`color-status-labeler:${testedOrigin}`], origin) as { rules: StoredRule[] };
     expect(saved.rules).toEqual([]);
   } finally {
